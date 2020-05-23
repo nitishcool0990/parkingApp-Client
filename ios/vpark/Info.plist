@@ -38,7 +38,11 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>To view car park near to user</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>To view car park near to user</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>To view car park near to user</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

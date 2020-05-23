@@ -3,6 +3,7 @@ import { SafeAreaView, View, StyleSheet, Text, Dimensions, FlatList, TextInput, 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MapView, { Marker, Coordinate } from 'react-native-maps';
 import TabbarComponent from '../Components/TabbarComponent';
+import Geolocation from 'react-native-geolocation-service';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -37,6 +38,19 @@ export default class Home extends React.Component {
         this.setState({ modalVisible: visible });
     }
 
+    componentDidMount =()=>{
+        Geolocation.getCurrentPosition(
+            (position) => {
+              console.log(position);
+            },
+            (error) => {
+              // See error code charts below.
+              console.log(error.code, error.message);
+            },
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+        );
+    }
+
     render = () => {
         return (
             <SafeAreaView style={{ flex: 1 }}>
@@ -66,6 +80,7 @@ export default class Home extends React.Component {
                             latitude: 37.78825,
                             longitude: -122.4324,
                         }}
+                        showsUserLocation={true}
                         onDragEnd={(e) => alert(JSON.stringify(e.nativeEvent.coordinate))}
                         title={'Test Marker'}
                         description={'This is a description of the marker'}
@@ -135,7 +150,7 @@ export default class Home extends React.Component {
                                                 height: 100,
                                                 elevation: 4,
                                                 backgroundColor: '#0099e5',
-                                                width: 170,
+                                                width: windowWidth*0.4,
                                                 margin: 1,
                                                 borderRadius: 5,
                                                 alignItems: 'center'
