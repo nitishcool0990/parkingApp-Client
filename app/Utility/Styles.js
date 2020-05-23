@@ -1,14 +1,19 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet,Dimensions} from 'react-native';
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 const ExStyles=StyleSheet.create({
     headerview: {
         position: 'absolute',
         borderRadius: 255,
-        left: -96,
-        marginTop: -450,
-        width: 600,
-        height: 600,
-        backgroundColor: '#0099e5'
+        left: -windowWidth * 1.45 / 6.5,
+        marginTop: -windowWidth - 20,
+        width: windowWidth * 1.45,
+        height: windowWidth * 1.45,
+        backgroundColor: '#0099e5',
+        alignItems: 'center',
+        elevation: 4,
     },
     headertext: {
         textAlign: 'center',

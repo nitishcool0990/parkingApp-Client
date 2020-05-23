@@ -4,6 +4,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MapView, { Marker, Coordinate } from 'react-native-maps';
 import TabbarComponent from '../Components/TabbarComponent';
 
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 export default class Home extends React.Component {
 
@@ -38,6 +40,21 @@ export default class Home extends React.Component {
     render = () => {
         return (
             <SafeAreaView style={{ flex: 1 }}>
+                <View style={styles.headerview}>
+                    <Text style={styles.headertext}>
+                        Vpark
+                    </Text>
+                </View>
+                <View style={styles.headerbar}>
+                    <Text style={{ flex: 1, textAlign: 'center', fontSize: 20, color: 'white' }}>Welcome Mr. ABC</Text>
+                    <TouchableOpacity>
+                        <Image
+                            source={require('../Images/profile.png')}
+                            resizeMode={'contain'}
+                            style={{ width: 50, height: 50 }}
+                        />
+                    </TouchableOpacity>
+                </View>
                 <MapView
                     style={{ flex: 1 }}
                     region={this.state.region}
@@ -54,35 +71,9 @@ export default class Home extends React.Component {
                         description={'This is a description of the marker'}
                     />
                 </MapView>
-                <View style={styles.headerview}>
-                    <Text style={styles.headertext}>
-                        Vpark
-                    </Text>
-                </View>
-                <View style={{ flexDirection: 'row', position: 'absolute', top: 50, paddingHorizontal: 20, alignItems: 'center' }}>
-                    <Text style={{ flex: 1, textAlign: 'center', fontSize: 20, color: 'white' }}>Welcome Mr. ABC</Text>
+                <View style={styles.searchbox}>
                     <TouchableOpacity>
-                        <Image source={require('../Images/profile.png')} resizeMode={'center'} style={{ width: 50, height: 50 }} />
-                    </TouchableOpacity>
-                </View>
-                <View style={{
-                    position: 'absolute',
-                    width: '90%',
-                    height: 80,
-                    backgroundColor: 'white',
-                    bottom: 120,
-                    left: '5%',
-                    right: '5%',
-                    elevation: 4,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: 15,
-                    borderRadius: 40,
-                    backgroundColor: '#0099e5'
-                }}>
-                    <TouchableOpacity>
-                        <FontAwesome name='search' size={40} color={'white'} />
+                        <FontAwesome name='search' size={35} color={'white'} />
                     </TouchableOpacity>
                     <TextInput
                         placeholder={'Select Location'}
@@ -93,24 +84,16 @@ export default class Home extends React.Component {
                                 selectedLocation: value
                             });
                         }}
-                        style={{
-                            //textAlign: 'center', 
-                            marginLeft: 10,
-                            flex: 1,
-                            fontSize: 20
-                        }}
+                        style={styles.searchtextinput}
                     />
-                    <TouchableOpacity onPress={() => { this.toggleModal(true) }}>
+                    <TouchableOpacity
+                        onPress={() => { this.toggleModal(true) }}
+                        style={styles.vehiclebtntouchable}
+                    >
                         <Image
                             source={require('../Images/btn_car.png')}
                             resizeMode={'center'}
-                            style={{
-                                width: 60,
-                                height: 60,
-                                elevation: 4,
-                                backgroundColor: 'white',
-                                borderRadius: 60
-                            }} />
+                            style={styles.vehiclebtn} />
                     </TouchableOpacity>
                 </View>
 
@@ -141,7 +124,7 @@ export default class Home extends React.Component {
                             alignItems: 'center',
                         }}>
 
-                            <View style={{marginTop:10}}>
+                            <View style={{ marginTop: 10 }}>
                                 <FlatList
                                     style={{ flex: 1 }}
                                     data={this.state.vehiclelist}
@@ -154,14 +137,14 @@ export default class Home extends React.Component {
                                                 backgroundColor: '#0099e5',
                                                 width: 170,
                                                 margin: 1,
-                                                borderRadius:5,
-                                                alignItems:'center'
+                                                borderRadius: 5,
+                                                alignItems: 'center'
                                             }}>
-                                                <Text style={{textAlign:'center',padding:5}}>{value.item.name}</Text>
-                                                <Image 
-                                                source={require('../Images/btn_car.png')}
-                                                resizeMode={'center'}
-                                                style={{width:90,height:90}}/>
+                                                <Text style={{ textAlign: 'center', padding: 5 }}>{value.item.name}</Text>
+                                                <Image
+                                                    source={require('../Images/btn_car.png')}
+                                                    resizeMode={'center'}
+                                                    style={{ width: 90, height: 90 }} />
                                             </TouchableOpacity>
                                         );
                                     }}
@@ -170,12 +153,12 @@ export default class Home extends React.Component {
                                     }}
                                 />
                                 <TouchableOpacity
-                                onPress={() => { this.toggleModal(false) }}
-                                style={{ marginBottom: 25 }}
-                            >
-                                <Text style={{textAlign:'center'}}>Cancel</Text>
-                            </TouchableOpacity>
-                            </View>     
+                                    onPress={() => { this.toggleModal(false) }}
+                                    style={{ marginBottom: 25 }}
+                                >
+                                    <Text style={{ textAlign: 'center' }}>Cancel</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
                 </Modal>
@@ -188,13 +171,14 @@ const styles = StyleSheet.create({
     headerview: {
         position: 'absolute',
         borderRadius: 255,
-        left: -96,
-        marginTop: -450,
-        width: 600,
-        height: 600,
+        left: -windowWidth * 1.45 / 6.5,
+        marginTop: -windowWidth - 30,
+        width: windowWidth * 1.45,
+        height: windowWidth * 1.45,
         backgroundColor: '#0099e5',
         alignItems: 'center',
-        elevation: 4
+        elevation: 4,
+        zIndex:100
     },
     headertext: {
         textAlign: 'center',
@@ -205,6 +189,51 @@ const styles = StyleSheet.create({
         textShadowRadius: 1,
         textShadowColor: 'white',
         elevation: 4
+    },
+    headerbar: {
+        flexDirection: 'row',
+        marginTop:5,
+        width: windowWidth,
+        paddingHorizontal: 20,
+        alignItems: 'center',
+        elevation:4,
+        zIndex:200
+    },
+    searchbox: {
+        position: 'absolute',
+        width: '90%',
+        height: windowHeight * 0.112,
+        backgroundColor: 'white',
+        bottom: windowHeight * 0.12,
+        left: '5%',
+        right: '5%',
+        elevation: 4,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: 15,
+        borderRadius: 50,
+        backgroundColor: '#0099e5'
+    }, vehiclebtn:
+    {
+        width: windowWidth * 0.16,
+        height: windowWidth * 0.16,
+        elevation: 4,
+        //backgroundColor: 'white',
+        borderRadius: 60
+    },
+    vehiclebtntouchable:
+    {
+        backgroundColor: 'white',
+        borderRadius: 50
+    },
+    searchtextinput:
+    {
+        //textAlign: 'center', 
+        marginLeft: 10,
+        flex: 1,
+        fontSize: 20,
+        padding: 5
     }
 
 });
