@@ -1,11 +1,14 @@
-import React from 'react';
-import { SafeAreaView, View, StyleSheet, Text } from 'react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import * as React from 'react';
+import { View, StyleSheet, Dimensions, SafeAreaView, Text } from 'react-native';
 import TabbarComponent from '../Components/TabbarComponent';
 import ExStyles from '../Utility/Styles';
 
 export default class Parking extends React.Component {
-    render = () => {
+    state = {
+
+    };
+
+    render() {
         return (
             <SafeAreaView style={{ flex: 1 }}>
                 <View style={ExStyles.headerview}>
@@ -15,10 +18,14 @@ export default class Parking extends React.Component {
                         Parking
                     </Text>
                 </View>
-
                 <TabbarComponent />
             </SafeAreaView>
         );
     }
 }
 
+const styles = StyleSheet.create({
+    scene: {
+        flex: 1,
+    },
+});
