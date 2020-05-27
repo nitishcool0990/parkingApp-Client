@@ -11,6 +11,9 @@ import Payment from './app/Screens/Payment';
 import Favourite from './app/Screens/Favourite';
 import Account from './app/Screens/Account';
 import NewPaymentMethods from './app/Screens/NewPaymentMethods';
+import Verification from './app/Screens/Verification';
+import Profile from './app/Screens/Profile';
+import Vehicles from './app/Screens/Vehicles';
 
 
 export default class App extends React.Component {
@@ -19,9 +22,9 @@ export default class App extends React.Component {
       <Router>
         <Stack key="root" hideNavBar>
           <Scene key="splashscreen" component={SplashScreen} />
-          <Scene key="home" component={Home} initial />
+          <Scene key="home" component={Home}  />
           <Scene key="login" component={Login} title="Login" />
-          <Scene key="register" component={Registration} title="Register" />
+          <Scene key="register" component={Registration} title="Register" initial />
           <Scene key="intro" component={Intro} title="Intro" />
           <Scene key="booking" component={Booking} title="Booking" />
           <Scene key="parking" component={Parking} title="Parking" />
@@ -29,6 +32,9 @@ export default class App extends React.Component {
           <Scene key="favourite" component={Favourite} title="Favourite" />
           <Scene key="account" component={Account} title="Account" />
           <Scene key="newpaymentmethods" component={NewPaymentMethods} title="New Payment Method" />
+          <Scene key="verification" component={Verification} title="Verification" />
+          <Scene key="profile" component={Profile} title="Profile" />
+          <Scene key="vehicles" component={Vehicles} title="Vehicles" />
 
         </Stack>
       </Router>

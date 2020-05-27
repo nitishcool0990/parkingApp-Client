@@ -200,17 +200,17 @@ export default class Home extends React.Component {
   setForceLocation = (value) => this.setState({ forceLocation: value });
 
   componentDidMount = () => {
-      Geolocation.getCurrentPosition(
-        (position) => {
-          console.log(position);
-        },
-        (error) => {
-          // See error code charts below.
-          console.log(error.code, error.message);
-        },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-      );
-    
+    Geolocation.getCurrentPosition(
+      (position) => {
+        console.log(position);
+      },
+      (error) => {
+        // See error code charts below.
+        console.log(error.code, error.message);
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+    );
+
   }
 
   render = () => {

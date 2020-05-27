@@ -7,13 +7,29 @@ import { Actions } from 'react-native-router-flux';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-export default class Account extends React.Component {
+export default class Vehicles extends React.Component {
 
     state = {
-        visible: ''
+        vehiclelist: [
+            {
+                vehicle_no: '123123123',
+                category: 'Car',
+
+            },
+            {
+                vehicle_no: '123123123',
+                category: 'Car',
+
+            },
+            {
+                vehicle_no: '123123123',
+                category: 'Car',
+
+            }
+        ],
     }
 
-    btnView = (name, sub,onPress) => {
+    btnView = (name, sub, onPress) => {
         return (
             <TouchableOpacity
                 onPress={onPress}
@@ -50,16 +66,41 @@ export default class Account extends React.Component {
                         </TouchableOpacity>
                     </View>
                     <Text style={styles.headertext}>
-                        Account
+                        Vehicles
                     </Text>
 
                     <View style={{ marginTop: 50 }}>
-                        {this.btnView('Porfile', 'Edit my persional infomation',()=>{Actions.push('profile')})}
-                        {this.btnView('Vehicles', '0 register vehicles',()=>{Actions.push('vehicles')})}
-                        {this.btnView('Fines', 'Fine(s) still cancellable')}
+                        <FlatList
+                            data={this.state.vehiclelist}
+                            renderItem={(item) => {
+                                return (
+                                    <View style={{ marginTop: 5, marginHorizontal: 5 }}>
+                                        <View style={{ flexDirection: 'row', padding: 5 }}>
+                                            <Text>Vehicle No :</Text>
+                                            <Text>{item.item.vehicle_no}</Text>
+                                        </View>
+                                        <View style={{ flexDirection: 'row', padding: 5 }}>
+                                            <Text>Vehicle No :</Text>
+                                            <Text>{item.item.category}</Text>
+                                        </View>
+                                    </View>
+                                );
+                            }}
+                        />
                     </View>
                 </View>
-
+                <TouchableOpacity
+                    style={{
+                        marginTop: 10,
+                        padding: 15,
+                        margin: 5,
+                        backgroundColor: '#0099e5',
+                        borderRadius: 5,
+                        marginBottom:30
+                    }}
+                >
+                    <Text style={{ textAlign: 'center', color: 'white' }}>ADD Vehicle</Text>
+                </TouchableOpacity>
             </SafeAreaView>
         );
     }
