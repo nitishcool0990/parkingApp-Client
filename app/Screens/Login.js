@@ -2,12 +2,27 @@ import * as React from 'react';
 import { View, StyleSheet, Dimensions, SafeAreaView, Text, TextInput, TouchableOpacity } from 'react-native';
 import ExStyles from '../Utility/Styles';
 import { Actions } from 'react-native-router-flux';
+import { authonticate } from '../Netowrks/server';
 
 export default class Parking extends React.Component {
     state = {
         mobile_number: '',
         vcodeviewer: ''
     };
+
+    authonticateFunction = () => {
+        authonticate(mobile_number, password)
+            .then(values => {
+                console.log('#### authonticate :' + JSON.stringify(values.data));
+                this.setState({
+                    dataArray: values.data
+                });
+            })
+            .catch(error => {
+                console.log('Api call authonticate error:' + error.message);
+                this.setState({ isFetching: false });
+            });
+    }
 
     render() {
         return (
@@ -28,7 +43,7 @@ export default class Parking extends React.Component {
                                 borderRadius: 5,
                                 borderColor: '#0099e5',
                                 borderWidth: 1,
-                                width:'92%'
+                                width: '92%'
                             }}
                             placeholder={'Enter mobile number'}
                             onChangeText={(value) => {
@@ -39,15 +54,15 @@ export default class Parking extends React.Component {
                         />
 
                         {(this.state.vcodeviewer) ?
-                            <View 
-                            style={{ 
-                                marginTop: 10,
-                                padding:5,
-                                borderColor:'#0099e5',
-                                borderWidth:1,
-                                marginHorizontal:5,
-                                borderRadius:5
-                                 }}>
+                            <View
+                                style={{
+                                    marginTop: 10,
+                                    padding: 5,
+                                    borderColor: '#0099e5',
+                                    borderWidth: 1,
+                                    marginHorizontal: 5,
+                                    borderRadius: 5
+                                }}>
                                 <Text style={{ textAlign: 'center' }}>Please enter are OTP sent no</Text>
 
                                 <TextInput
@@ -123,7 +138,7 @@ export default class Parking extends React.Component {
                             <Text style={{ textAlign: 'center' }}>I dont'n have an account</Text>
                         </TouchableOpacity>
                     </View>
-                
+
                 </View>
             </SafeAreaView >
         );

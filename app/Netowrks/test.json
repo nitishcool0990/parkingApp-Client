@@ -1,0 +1,20 @@
+{
+    "map": {
+        "x-frame-options": "DENY",
+        "x-xss-protection": "1; mode=block",
+        "keep-alive": "timeout=60",
+        "pragma": "no-cache",
+        "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
+        "transfer-encoding": "Identity",
+        "content-type": "application/json",
+        "expires": "0",
+        "connection": "keep-alive",
+        "date": "Fri, 29 May 2020 11:02:42 GMT",
+        "x-content-type-options": "nosniff",
+        "vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+    }
+}
+
+{
+    "token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwNzUxMTExMTExIiwicm9sZXMiOlt7ImF1dGhvcml0eSI6IkFETUlOIn1dLCJleHAiOjE1OTA3NjkxOTYsImlhdCI6MTU5MDc1MTE5Nn0.LuVTlhK5c1UpUFUcW_kIG61aRIuVObFyCq9DqRCHkMEnyM4F3fNYdaz3eGVDxDThpcFhJ47rEraLKNzhnO0hpg"
+}

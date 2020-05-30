@@ -2,6 +2,7 @@ import React from 'react';
 import { Router, Stack, Scene } from 'react-native-router-flux';
 import Home from './app/Screens/Home';
 import Login from './app/Screens/Login';
+import Login2 from './app/Screens/Login2';
 import Registration from './app/Screens/Registration';
 import SplashScreen from './app/Screens/SplashScreen';
 import Intro from './app/Screens/intro';
@@ -21,10 +22,12 @@ export default class App extends React.Component {
     return (
       <Router>
         <Stack key="root" hideNavBar>
-          <Scene key="splashscreen" component={SplashScreen} />
+          <Scene key="splashscreen" component={SplashScreen} initial/>
           <Scene key="home" component={Home}  />
           <Scene key="login" component={Login} title="Login" />
-          <Scene key="register" component={Registration} title="Register" initial />
+          <Scene key="login2" component={Login2} title="Login2" />
+          <Scene key="login" component={Login} title="Login" />
+          <Scene key="register" component={Registration} title="Register"/>
           <Scene key="intro" component={Intro} title="Intro" />
           <Scene key="booking" component={Booking} title="Booking" />
           <Scene key="parking" component={Parking} title="Parking" />

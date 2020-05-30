@@ -6,6 +6,7 @@ import TabbarComponent from '../Components/TabbarComponent';
 import Geolocation from 'react-native-geolocation-service';
 import { Actions } from 'react-native-router-flux';
 
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
