@@ -38,10 +38,6 @@ export default class TabbarComponent extends Component {
                     <FontAwesome name="tag" size={25} color="#E5E5E5" />
                     <Text style={styles.tabTitle}>Booking</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.tabItem} onPress={() => this.Parking()}>
-                    <MaterialIcons name="place" size={25} color="#E5E5E5" />
-                    <Text style={styles.tabTitle}>Parking</Text>
-                </TouchableOpacity>
                 <TouchableOpacity style={styles.tabItem} onPress={() => this.Favourite()}>
                     <MaterialIcons name="whatshot" size={25} color="#E5E5E5" />
                     <Text style={styles.tabTitle}>Favourite</Text>

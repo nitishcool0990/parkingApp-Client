@@ -216,13 +216,13 @@ export default class Home extends React.Component {
 
   render = () => {
     return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.headerview}>
+      <SafeAreaView style={styles.safe}>
+        {/* <View style={styles.headerview}>
           <Text style={styles.headertext}>
             Vpark
                     </Text>
-        </View>
-        <View style={styles.headerbar}>
+        </View> */}
+        {/* <View style={styles.headerbar}>
           <Text style={{ flex: 1, textAlign: 'center', fontSize: 20, color: 'white' }}>Welcome Mr. ABC</Text>
           <TouchableOpacity onPress={() => { Actions.push('account') }}>
             <Image
@@ -231,7 +231,40 @@ export default class Home extends React.Component {
               style={{ width: 50, height: 50 }}
             />
           </TouchableOpacity>
+        </View> */}
+
+        <View style={styles.headerbar2}>
+          <TouchableOpacity onPress={() => {  }}>
+            {/* <FontAwesome name={'chevron-left'} size={25} color={'white'} /> */}
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => { Actions.drawerOpen(); }}>
+            <FontAwesome name={'bars'} size={30} color={'white'} />
+          </TouchableOpacity>
         </View>
+        
+        <View style={{ flexDirection: 'row'}}>
+          <TouchableOpacity style={{
+            padding:10,
+            alignItems:'center',
+            flex:1,
+            backgroundColor:'#32a852',
+            marginHorizontal:2,
+            elevation:3
+            }}>
+            <Text style={{color:'white'}}>Daily</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{
+            padding:10,
+            alignItems:'center',
+            flex:1,
+            backgroundColor:'#32a852',
+            marginHorizontal:2,
+            elevation:3
+            }}>
+            <Text style={{color:'white'}}>Monthly</Text>
+          </TouchableOpacity>
+        </View>
+
         <MapView
           style={{ flex: 1 }}
           region={this.state.region}
@@ -247,9 +280,12 @@ export default class Home extends React.Component {
             onDragEnd={(e) => alert(JSON.stringify(e.nativeEvent.coordinate))}
             title={'Test Marker'}
             description={'This is a description of the marker'}
+            onPress={()=>{
+              Actions.push('parkdetails');
+            }}
           />
         </MapView>
-        <View style={styles.searchbox}>
+        {/* <View style={styles.searchbox}>
           <TouchableOpacity>
             <FontAwesome name='search' size={35} color={'white'} />
           </TouchableOpacity>
@@ -273,8 +309,73 @@ export default class Home extends React.Component {
               resizeMode={'center'}
               style={styles.vehiclebtn} />
           </TouchableOpacity>
-        </View>
+        </View> */}
 
+        <View style={styles.searchbox2}>
+          <Text style={{
+            color: 'black',
+            fontSize: 18,
+            padding: 5
+          }}>Where do you need to park ?</Text>
+
+          <View style={{
+            marginHorizontal: 20,
+            borderRadius: 35,
+            borderWidth: 1,
+            borderColor: 'black',
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginVertical: 10,
+            padding: 10
+          }}>
+            <TouchableOpacity>
+              <FontAwesome name='search' size={35} color={'balck'} />
+            </TouchableOpacity>
+            <TextInput
+              placeholder={'Select Location'}
+              placeholderTextColor={'balck'}
+              value={this.state.selectedLocation}
+              onChangeText={(value) => {
+                this.setState({
+                  selectedLocation: value
+                });
+              }}
+              style={styles.searchtextinput}
+            />
+            <TouchableOpacity
+              onPress={() => { this.toggleModal(true) }}
+              style={styles.vehiclebtntouchable}
+            >
+              <Image
+                source={require('../Images/btn_car.png')}
+                resizeMode={'center'}
+                style={styles.vehiclebtn} />
+            </TouchableOpacity>
+          </View>
+
+          <View style={{ flexDirection: 'row' }}>
+            <TouchableOpacity style={{
+              alignItems: 'center',
+              flex: 1,
+              padding: 5,
+              borderColor: 'black',
+              borderWidth: 0.2
+            }}>
+              <Text style={{ fontWeight: 'bold' }}>Entrance</Text>
+              <Text style={{ color: 'blue' }}>Today 10:00 AM</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={{
+              alignItems: 'center',
+              flex: 1,
+              padding: 5,
+              borderColor: 'black',
+              borderWidth: 0.2
+            }}>
+              <Text style={{ fontWeight: 'bold' }}>Exit</Text>
+              <Text style={{ color: 'blue' }}>Today 11:00 AM</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
         <TabbarComponent />
 
         <Modal
@@ -377,6 +478,17 @@ const styles = StyleSheet.create({
     elevation: 4,
     zIndex: 200
   },
+  headerbar2: {
+    flexDirection: 'row',
+    backgroundColor: '#0099e5',
+    padding: 5,
+    width: windowWidth,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    elevation: 4,
+    zIndex: 200,
+    justifyContent: 'space-between'
+  },
   searchbox: {
     position: 'absolute',
     width: '90%',
@@ -392,26 +504,30 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 50,
     backgroundColor: '#0099e5'
-  }, vehiclebtn:
-  {
-    width: windowWidth * 0.16,
-    height: windowWidth * 0.16,
+  },
+  searchbox2: {
+    backgroundColor: 'white'
+  },
+  vehiclebtn: {
+    width: windowWidth * 0.12,
+    height: windowWidth * 0.12,
     elevation: 4,
     //backgroundColor: 'white',
     borderRadius: 60
   },
-  vehiclebtntouchable:
-  {
+  vehiclebtntouchable: {
     backgroundColor: 'white',
     borderRadius: 50
   },
-  searchtextinput:
-  {
+  searchtextinput: {
     //textAlign: 'center', 
     marginLeft: 10,
     flex: 1,
     fontSize: 20,
     padding: 5
+  },
+  safe: {
+    flex: 1,
+    backgroundColor: '#0099e5'
   }
-
 });

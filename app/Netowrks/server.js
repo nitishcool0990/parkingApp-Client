@@ -16,13 +16,13 @@ async function authonticate(username, password) {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'userName':username,
-        'password':password
+        'userName': username,
+        'password': password
       },
       // body: JSON.stringify(data),
     });
-    let responce_Values = await responce.text();    
-      console.log("#### authonticate :" + responce_Values);
+    let responce_Values = await responce.text();
+    console.log("#### authonticate :" + responce_Values);
     return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
   } catch (error) {
     //  alert('###: server error - getLogin : ' + JSONerror);
@@ -33,7 +33,7 @@ async function authonticate(username, password) {
 
 //user - Controller
 
-async function createNewUser(MobileNo, firstName,lastName,email,city,password,status,userType) {
+async function createNewUser(MobileNo, firstName, lastName, email, city, password, status, userType) {
   const data = {
     mobileNo: MobileNo,
     firstName: firstName,
@@ -53,12 +53,12 @@ async function createNewUser(MobileNo, firstName,lastName,email,city,password,st
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-       body: JSON.stringify(data),
+      body: JSON.stringify(data),
     });
     console.log("#### createNewUser :" + JSON.stringify(data));
     console.log("#### createNewUser url :" + JSON.stringify(url));
     let responce_Values = await responce.text();
-      console.log("#### createNewUser :" + responce_Values);
+    console.log("#### createNewUser :" + responce_Values);
     return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
   } catch (error) {
     //  alert('###: server error - getLogin : ' + JSONerror);
@@ -67,8 +67,8 @@ async function createNewUser(MobileNo, firstName,lastName,email,city,password,st
   }
 }
 
-async function findUserById(Token,id) {
- 
+async function findUserById(Token, id) {
+
   try {
     const url = BASE_ADDRESS + '/users/v1/'+id;
     let responce = await fetch(url, {
@@ -76,13 +76,14 @@ async function findUserById(Token,id) {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'Authorization':"Bearer "+Token
+        'Authorization': "Bearer " + Token
       },
     });
     let responce_Values = await responce.text();
- 
-      console.log("#### findUserById :" + responce_Values);
-   
+
+    console.log("#### findUserById url:" + url);
+    console.log("#### findUserById :" + responce_Values);
+
     return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
   } catch (error) {
     //  alert('###: server error - getLogin : ' + JSONerror);
@@ -91,9 +92,9 @@ async function findUserById(Token,id) {
   }
 }
 
-async function updateUser(id, MobileNo, firstName,lastName,email,city,password,status,userType) {
+async function updateUser(Token,id, MobileNo, firstName, lastName, email, city, password, status, userType) {
   const data = {
-    id:id,
+    id: id,
     MobileNo: MobileNo,
     firstName: firstName,
     lastName: lastName,
@@ -105,14 +106,15 @@ async function updateUser(id, MobileNo, firstName,lastName,email,city,password,s
   };
 
   try {
-    const url = BASE_ADDRESS + '/users/v1/'+id;
+    const url = BASE_ADDRESS + '/users/v1/' + id;
     let responce = await fetch(url, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
       },
-       body: JSON.stringify(data),
+      body: JSON.stringify(data),
     });
     let responce_Values = await responce.text();
     if (responce_active) {
@@ -126,21 +128,23 @@ async function updateUser(id, MobileNo, firstName,lastName,email,city,password,s
   }
 }
 
-async function findUserProfile(id) {
- 
+async function findUserProfile(Token,id) {
+
   try {
-    const url = BASE_ADDRESS + '/users/v1/'+id+'/profile';
+    const url = BASE_ADDRESS + '/users/v1/' + id + '/profile';
     let responce = await fetch(url, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
       },
     });
     let responce_Values = await responce.text();
-    if (responce_active) {
-      console.log("#### findUserProfile :" + responce_Values);
-    }
+
+    console.log("#### findUserProfile data:" + url);
+    console.log("#### findUserProfile :" + responce_Values);
+
     return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
   } catch (error) {
     //  alert('###: server error - getLogin : ' + JSONerror);
@@ -149,9 +153,9 @@ async function findUserProfile(id) {
   }
 }
 
-async function updateUserProfile(id,firstName,lastName,email,city) {
+async function updateUserProfile(Token,id, firstName, lastName, email, city) {
   const data = {
-    id:id,
+    id: id,
     MobileNo: MobileNo,
     firstName: firstName,
     lastName: lastName,
@@ -160,14 +164,15 @@ async function updateUserProfile(id,firstName,lastName,email,city) {
   };
 
   try {
-    const url = BASE_ADDRESS + '/users/v1/'+id+'/profile';
+    const url = BASE_ADDRESS + '/users/v1/' + id + '/profile';
     let responce = await fetch(url, {
       method: 'PATCH',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
       },
-       body: JSON.stringify(data),
+      body: JSON.stringify(data),
     });
     let responce_Values = await responce.text();
     if (responce_active) {
@@ -183,8 +188,8 @@ async function updateUserProfile(id,firstName,lastName,email,city) {
 
 //vehicle - Controller
 
-async function findAllVehicles(user,vehicleNo,vehicleType) {
- 
+async function findAllVehicles(Token,user, vehicleNo, vehicleType) {
+
   try {
     const url = BASE_ADDRESS + '/vehicles/v1';
     let responce = await fetch(url, {
@@ -192,9 +197,10 @@ async function findAllVehicles(user,vehicleNo,vehicleType) {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'user':user,
-        'vehicleNo':vehicleNo,
-        'vehicleType':vehicleType
+        'user': user,
+        'vehicleNo': vehicleNo,
+        'vehicleType': vehicleType,
+        'Authorization': "Bearer " + Token
       },
     });
     let responce_Values = await responce.text();
@@ -209,7 +215,7 @@ async function findAllVehicles(user,vehicleNo,vehicleType) {
   }
 }
 
-async function createNewVehicle(id,vehicleNo,vehicleType) {
+async function createNewVehicle(Token,id, vehicleNo, vehicleType) {
   const data = {
     id: id,
     vehicleNo: vehicleNo,
@@ -222,6 +228,7 @@ async function createNewVehicle(id,vehicleNo,vehicleType) {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
       },
       body: JSON.stringify(data),
     });
@@ -237,15 +244,16 @@ async function createNewVehicle(id,vehicleNo,vehicleType) {
   }
 }
 
-async function findVehicleById(id) {
-  
+async function findVehicleById(Token,id) {
+
   try {
-    const url = BASE_ADDRESS + '/vehicles/v1/'+id;
+    const url = BASE_ADDRESS + '/vehicles/v1/' + id;
     let responce = await fetch(url, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
       },
     });
     let responce_Values = await responce.text();
@@ -260,19 +268,20 @@ async function findVehicleById(id) {
   }
 }
 
-async function updateVehicle(id,vehicleNo,vehicleType) {
+async function updateVehicle(Token,id, vehicleNo, vehicleType) {
   const data = {
     id: id,
     vehicleNo: vehicleNo,
     vehicleType: vehicleType,
   };
   try {
-    const url = BASE_ADDRESS + '/vehicles/v1/'+id;
+    const url = BASE_ADDRESS + '/vehicles/v1/' + id;
     let responce = await fetch(url, {
       method: 'PUT',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
       },
       body: JSON.stringify(data),
     });
@@ -288,15 +297,16 @@ async function updateVehicle(id,vehicleNo,vehicleType) {
   }
 }
 
-async function deleteVehicle(id) {
-  
+async function deleteVehicle(Token,id) {
+
   try {
-    const url = BASE_ADDRESS + '/vehicles/v1/'+id;
+    const url = BASE_ADDRESS + '/vehicles/v1/' + id;
     let responce = await fetch(url, {
       method: 'DELETE',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
       },
     });
     let responce_Values = await responce.text();
@@ -317,9 +327,9 @@ export { findUserById };
 export { updateUser };
 export { findUserProfile };
 export { updateUserProfile };
-export {findAllVehicles};
-export {createNewVehicle};
-export {findVehicleById};
-export {updateVehicle};
-export {deleteVehicle};
+export { findAllVehicles };
+export { createNewVehicle };
+export { findVehicleById };
+export { updateVehicle };
+export { deleteVehicle };
 

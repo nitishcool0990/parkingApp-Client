@@ -1,9 +1,11 @@
 import * as React from 'react';
-import { View, StyleSheet, Dimensions, SafeAreaView, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Dimensions, Image, SafeAreaView, Text, TextInput, TouchableOpacity } from 'react-native';
 import ExStyles from '../Utility/Styles';
 import { Actions } from 'react-native-router-flux';
 import { authonticate } from '../Netowrks/server';
 import { storeData } from '../AsyncStorage/AsyncStorage';
+
+var jwtDecode = require('jwt-decode');
 
 export default class Login2 extends React.Component {
     state = {
@@ -13,17 +15,27 @@ export default class Login2 extends React.Component {
         dataArray: ''
     };
 
+    decodeJWTToken = (token) => {
+        var decoded = jwtDecode(token);
+        console.log(decoded);
+    }
+
     authonticateFunction = () => {
         authonticate(this.state.username, this.state.password)
             .then(values => {
-                console.log('#### authonticate :' + JSON.stringify(values.data));
-                if(values.data!=undefined){
-                    this.setState({
-                        dataArray: values.data
-                    }, () => {
-                        storeData('token', values.data.token);
-                        Actions.home();
-                    });
+                console.log('#### authonticate :' + JSON.stringify(values));
+                if(values.status==400){
+                    if (values.data != undefined) {
+                        this.setState({
+                            dataArray: values.data
+                        }, () => {
+                            storeData('token', values.data.token);
+                            this.decodeJWTToken(values.data.token);
+                            //Actions.home();
+                        });
+                    }
+                } else{
+                    alert(values.status+'-'+values.error);
                 }
             })
             .catch(error => {
@@ -35,25 +47,32 @@ export default class Login2 extends React.Component {
     render() {
         return (
             <SafeAreaView style={{ flex: 1 }}>
-                <View style={ExStyles.headerview}>
-                </View>
-                <View style={{ flex: 1 }}>
-                    <Text style={ExStyles.headertext}>
-                        Login
-                    </Text>
 
-                    <View style={{ marginTop: 50 }}>
+                <View style={{ flex: 1 }}>
+                    <Image
+                        source={require('../Images/default.png')}
+                        style={{
+                            width: 250,
+                            height: 200,
+                            marginTop: 20,
+                            alignSelf: 'center'
+                        }} />
+
+                    <Text style={{ fontSize: 20, alignSelf: 'center' }}>Login to VPark</Text>
+                    <View style={{ marginTop: 30 }}>
                         <TextInput
                             value={this.state.username}
                             style={{
-                                padding: 15,
+                                padding: 10,
                                 alignSelf: 'center',
                                 borderRadius: 5,
                                 borderColor: '#0099e5',
                                 borderWidth: 1,
-                                width: '92%'
+                                width: '92%',
+                                textAlign: 'center',
+                                fontSize: 18
                             }}
-                            placeholder={'User Name'}
+                            placeholder={'Mobile number'}
                             onChangeText={(value) => {
                                 this.setState({
                                     username: value
@@ -64,13 +83,15 @@ export default class Login2 extends React.Component {
                         <TextInput
                             value={this.state.password}
                             style={{
-                                padding: 15,
+                                padding: 10,
                                 marginTop: 10,
                                 alignSelf: 'center',
                                 borderRadius: 5,
                                 borderColor: '#0099e5',
                                 borderWidth: 1,
-                                width: '92%'
+                                width: '92%',
+                                textAlign: 'center',
+                                fontSize: 18
                             }}
                             placeholder={'Password'}
                             onChangeText={(value) => {
@@ -93,22 +114,34 @@ export default class Login2 extends React.Component {
                             onPress={() => {
 
                                 this.authonticateFunction();
+                                // Actions.home();
                             }}
                         >
-                            <Text style={{ color: 'white' }}>{(this.state.vcodeviewer == true) ? 'Verify' : 'Login'}</Text>
+                            <Text style={{ color: 'white', fontSize: 18 }}>{(this.state.vcodeviewer == true) ? 'Verify' : 'Login'}</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity
                             style={{
-                                marginVertical: 10
+                                marginVertical: 10,
                             }}
                             onPress={() => {
                                 Actions.register();
                             }}>
-                            <Text style={{ textAlign: 'center' }}>I dont'n have an account</Text>
+                            <Text style={{ textAlign: 'center', fontSize: 18 }}>I dont'n have an account</Text>
                         </TouchableOpacity>
                     </View>
-
+                    <TouchableOpacity
+                        style={{
+                            marginVertical: 10,
+                            position: 'absolute',
+                            bottom: 10,
+                            alignSelf: 'center'
+                        }}
+                        onPress={() => {
+                            Actions.register();
+                        }}>
+                        <Text style={{ textAlign: 'center', fontSize: 18 }}>Reset password</Text>
+                    </TouchableOpacity>
                 </View>
             </SafeAreaView >
         );

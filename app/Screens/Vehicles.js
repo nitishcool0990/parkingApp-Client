@@ -3,6 +3,7 @@ import { SafeAreaView, View, StyleSheet, Text, TouchableOpacity, Image, Dimensio
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import ExStyles from '../Utility/Styles';
 import { Actions } from 'react-native-router-flux';
+import { findAllVehicles } from '../Netowrks/server';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -27,6 +28,23 @@ export default class Vehicles extends React.Component {
 
             }
         ],
+    }
+
+    componentDidCatch = () => {
+        this.findAllVehiclesFunction();
+    }
+
+    findAllVehiclesFunction = () => {
+        findAllVehicles(this.props.token, this.props.user_id).then((value) => {
+            if (value.status == 400) {
+                alert(value)
+            } else {
+                alert("status :" + value.status + "-" + value.message);
+            }
+        }).catch((error) => {
+            alert(console.error()
+            );
+        });
     }
 
     btnView = (name, sub, onPress) => {
@@ -55,21 +73,26 @@ export default class Vehicles extends React.Component {
 
     render = () => {
         return (
-            <SafeAreaView style={{ flex: 1 }}>
-                <View style={ExStyles.headerview}>
+            <SafeAreaView style={styles.safe}>
+                {/* <View style={ExStyles.headerview}>
 
+                </View> */}
+                <View style={styles.headerbar}>
+                    <TouchableOpacity onPress={() => { Actions.pop() }}>
+                        <FontAwesome name={'chevron-left'} size={20} color={'black'} />
+                    </TouchableOpacity>
                 </View>
-                <View style={{ flex: 1 }}>
-                    <View style={styles.headerbar}>
+                <View style={{ flex: 1, backgroundColor: 'white' }}>
+                    {/* <View style={styles.headerbar}>
                         <TouchableOpacity onPress={() => { Actions.pop() }}>
                             <FontAwesome name={'chevron-left'} size={20} color={'white'} />
                         </TouchableOpacity>
-                    </View>
-                    <Text style={styles.headertext}>
+                    </View> */}
+                    {/* <Text style={styles.headertext}>
                         Vehicles
-                    </Text>
+                    </Text> */}
 
-                    <View style={{ marginTop: 50 }}>
+                    <View style={{ marginTop: 10, flex: 1 }}>
                         <FlatList
                             data={this.state.vehiclelist}
                             renderItem={(item) => {
@@ -88,28 +111,35 @@ export default class Vehicles extends React.Component {
                             }}
                         />
                     </View>
+                    <TouchableOpacity
+                        style={{
+                            marginTop: 10,
+                            padding: 15,
+                            margin: 5,
+                            backgroundColor: '#08a32c',
+                            marginHorizontal: 10,
+                            borderRadius: 5,
+                            marginBottom: 30
+                        }}
+                        onPress={() => { Actions.push('addvehicles') }}
+                    >
+                        <Text style={{ textAlign: 'center', color: 'white' }}>ADD Vehicle</Text>
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity
-                    style={{
-                        marginTop: 10,
-                        padding: 15,
-                        margin: 5,
-                        backgroundColor: '#0099e5',
-                        borderRadius: 5,
-                        marginBottom:30
-                    }}
-                >
-                    <Text style={{ textAlign: 'center', color: 'white' }}>ADD Vehicle</Text>
-                </TouchableOpacity>
             </SafeAreaView>
         );
     }
 }
 
 const styles = StyleSheet.create({
+    safe: {
+        flex: 1,
+        backgroundColor: '#0099e5',
+    },
     headerbar: {
         flexDirection: 'row',
-        marginTop: 5,
+        backgroundColor: '#0099e5',
+        padding: 5,
         width: windowWidth,
         paddingHorizontal: 20,
         alignItems: 'center',
