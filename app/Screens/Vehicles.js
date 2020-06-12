@@ -30,21 +30,22 @@ export default class Vehicles extends React.Component {
         ],
     }
 
-    componentDidCatch = () => {
+    componentDidMount = () => {
+      
         this.findAllVehiclesFunction();
     }
 
     findAllVehiclesFunction = () => {
-        findAllVehicles(this.props.token, this.props.user_id).then((value) => {
-            if (value.status == 400) {
+        findAllVehicles(this.props.token,this.props.user_id,"","").then((value) => {
+            alert(JSON.stringify(value));
+            if (value.status == 1) {
                 alert(value)
             } else {
                 alert("status :" + value.status + "-" + value.message);
             }
         }).catch((error) => {
-            alert(console.error()
-            );
-        });
+            alert(error)
+        })
     }
 
     btnView = (name, sub, onPress) => {
@@ -121,7 +122,7 @@ export default class Vehicles extends React.Component {
                             borderRadius: 5,
                             marginBottom: 30
                         }}
-                        onPress={() => { Actions.push('addvehicles') }}
+                        onPress={() => { Actions.push('addvehicles',{'token':this.props.token,'user_id':this.props.user_id}) }}
                     >
                         <Text style={{ textAlign: 'center', color: 'white' }}>ADD Vehicle</Text>
                     </TouchableOpacity>

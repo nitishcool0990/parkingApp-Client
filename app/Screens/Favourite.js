@@ -3,6 +3,7 @@ import { SafeAreaView, View, StyleSheet, Text, FlatList,Dimensions, TouchableOpa
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import TabbarComponent from '../Components/TabbarComponent';
 import ExStyles from '../Utility/Styles';
+import { Actions } from 'react-native-router-flux';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -28,7 +29,7 @@ export default class Favourite extends React.Component {
 
     render = () => {
         return (
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView style={styles.safe}>
                 {/* <View style={ExStyles.headerview}>
                 </View> */}
                 <View style={styles.headerbar2}>
@@ -39,11 +40,11 @@ export default class Favourite extends React.Component {
                         <FontAwesome name={'bars'} size={30} color={'white'} />
                     </TouchableOpacity>
                 </View>
-                <View style={{ flex: 1 }}>
+                <View style={{  flex: 1, backgroundColor: 'white'}}>
                     {/* <Text style={ExStyles.headertext}>
                         Favourite
                     </Text> */}
-                    <View style={{ marginTop: 10 }}>
+                    <View style={{ marginTop: 10,flex:1 }}>
                         <FlatList
                             data={this.state.favouritearry}
                             renderItem={(item) => {
@@ -72,10 +73,10 @@ export default class Favourite extends React.Component {
                             }}
                         />
                     </View>
-                </View>
-                <TouchableOpacity style={{ padding: 15, backgroundColor: '#08a32c', margin: 5, borderRadius: 5 }}>
+                    <TouchableOpacity style={{ padding: 15, backgroundColor: '#08a32c', margin: 5, borderRadius: 5 }}>
                     <Text style={{ textAlign: 'center', color: 'white' }}>Add Favourite</Text>
                 </TouchableOpacity>
+                </View>
                 <TabbarComponent />
             </SafeAreaView>
         );
@@ -83,6 +84,10 @@ export default class Favourite extends React.Component {
 }
 
 const styles = StyleSheet.create({
+    safe: {
+        flex: 1,
+        backgroundColor: '#0099e5'
+    },
     textpadding: {
         padding: 2
     },

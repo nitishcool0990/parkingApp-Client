@@ -4,7 +4,9 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MapView, { Marker, Coordinate } from 'react-native-maps';
 import TabbarComponent from '../Components/TabbarComponent';
 import Geolocation from 'react-native-geolocation-service';
+import { findAllLocations } from '../Netowrks/server';
 import { Actions } from 'react-native-router-flux';
+import { getData } from '../AsyncStorage/AsyncStorage';
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -13,12 +15,13 @@ const windowHeight = Dimensions.get('window').height;
 export default class Home extends React.Component {
 
   state = {
-    region: {
-      latitude: 37.78825,
-      longitude: -122.4324,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
-    },
+    // region: {
+    //   latitude: 37.78825,
+    //   longitude: -122.4324,
+    //   latitudeDelta: 0.0922,
+    //   longitudeDelta: 0.0421,
+    // },
+    region:{},
     selectedLocation: '',
     modalVisible: false,
     vehiclelist: [
@@ -30,7 +33,9 @@ export default class Home extends React.Component {
       },
       {
         name: 'bus'
-      }]
+      }],
+    token: '',
+    locationList: [],
   }
 
   onRegionChange = (region) => {
@@ -194,6 +199,23 @@ export default class Home extends React.Component {
     }
   };
 
+  searchLocation = () => {
+    findAllLocations(this.state.token, this.state.selectedLocation).then((value) => {
+
+      var region = {
+        latitude: value.data[0].latitude,
+        longitude: value.data[0].longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      }
+
+      this.setState({
+        locationList: value.data,
+        region: region
+      });
+    });
+  }
+
   setAccuracy = (value) => this.setState({ highAccuracy: value });
   setSignificantChange = (value) =>
     this.setState({ significantChanges: value });
@@ -203,7 +225,18 @@ export default class Home extends React.Component {
   componentDidMount = () => {
     Geolocation.getCurrentPosition(
       (position) => {
-        console.log(position);
+        console.warn(position.coords);
+       
+        var location = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }
+
+        this.setState({
+          region: location
+        });
       },
       (error) => {
         // See error code charts below.
@@ -211,6 +244,18 @@ export default class Home extends React.Component {
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
     );
+
+    getData('token', (values) => {
+      if (values == null) {
+        Actions.login2();
+      } else {
+        var data = JSON.parse(values);
+        this.setState({
+          token: data.token,
+        });
+
+      }
+    });
 
   }
 
@@ -234,56 +279,83 @@ export default class Home extends React.Component {
         </View> */}
 
         <View style={styles.headerbar2}>
-          <TouchableOpacity onPress={() => {  }}>
+          <TouchableOpacity onPress={() => { }}>
             {/* <FontAwesome name={'chevron-left'} size={25} color={'white'} /> */}
           </TouchableOpacity>
           <TouchableOpacity onPress={() => { Actions.drawerOpen(); }}>
             <FontAwesome name={'bars'} size={30} color={'white'} />
           </TouchableOpacity>
         </View>
-        
-        <View style={{ flexDirection: 'row'}}>
+
+        <View style={{ flexDirection: 'row' }}>
           <TouchableOpacity style={{
-            padding:10,
-            alignItems:'center',
-            flex:1,
-            backgroundColor:'#32a852',
-            marginHorizontal:2,
-            elevation:3
-            }}>
-            <Text style={{color:'white'}}>Daily</Text>
+            padding: 10,
+            alignItems: 'center',
+            flex: 1,
+            backgroundColor: '#32a852',
+            marginHorizontal: 2,
+            elevation: 3
+          }}>
+            <Text style={{ color: 'white' }}>Daily</Text>
           </TouchableOpacity>
           <TouchableOpacity style={{
-            padding:10,
-            alignItems:'center',
-            flex:1,
-            backgroundColor:'#32a852',
-            marginHorizontal:2,
-            elevation:3
-            }}>
-            <Text style={{color:'white'}}>Monthly</Text>
+            padding: 10,
+            alignItems: 'center',
+            flex: 1,
+            backgroundColor: '#32a852',
+            marginHorizontal: 2,
+            elevation: 3
+          }}>
+            <Text style={{ color: 'white' }}>Monthly</Text>
           </TouchableOpacity>
         </View>
 
         <MapView
           style={{ flex: 1 }}
           region={this.state.region}
-          onRegionChange={this.onRegionChange}
+        //  onRegionChange={this.onRegionChange}
         >
           <Marker
             draggable
             coordinate={{
-              latitude: 37.78825,
-              longitude: -122.4324,
+              latitude: this.state.region.latitude,
+              longitude: this.state.region.longitude,
             }}
             showsUserLocation={true}
             onDragEnd={(e) => alert(JSON.stringify(e.nativeEvent.coordinate))}
-            title={'Test Marker'}
+            title={'Your Location'}
             description={'This is a description of the marker'}
-            onPress={()=>{
-              Actions.push('parkdetails');
+            onPress={() => {
+              //Actions.push('parkdetails');
             }}
           />
+
+          {
+          (this.state.locationList.length!=0)?
+          (this.state.locationList.map((value) => {
+            console.warn(JSON.stringify(value));
+            return (
+              <Marker
+                draggable
+                coordinate={{
+                  latitude: value.latitude,
+                  longitude: value.longitude,
+                }}
+                showsUserLocation={true}
+                onDragEnd={(e) => alert(JSON.stringify(e.nativeEvent.coordinate))}
+                title={value.parkName}
+                description={value.parkAddress}
+                onPress={() => {
+                  Actions.push('parkdetails',{});
+                }}
+              />
+            );
+          }
+          ))
+          :
+          null
+        }
+
         </MapView>
         {/* <View style={styles.searchbox}>
           <TouchableOpacity>
@@ -328,7 +400,7 @@ export default class Home extends React.Component {
             marginVertical: 10,
             padding: 10
           }}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => { this.searchLocation(this.state.selectedLocation) }}>
               <FontAwesome name='search' size={35} color={'balck'} />
             </TouchableOpacity>
             <TextInput

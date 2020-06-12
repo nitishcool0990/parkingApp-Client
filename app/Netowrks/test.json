@@ -18,3 +18,19 @@
 {
     "token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwNzUxMTExMTExIiwicm9sZXMiOlt7ImF1dGhvcml0eSI6IkFETUlOIn1dLCJleHAiOjE1OTA3NjkxOTYsImlhdCI6MTU5MDc1MTE5Nn0.LuVTlhK5c1UpUFUcW_kIG61aRIuVObFyCq9DqRCHkMEnyM4F3fNYdaz3eGVDxDThpcFhJ47rEraLKNzhnO0hpg"
 }
+
+{
+    "data": {
+        "createdDate": "2020-05-29T11:05:50",
+        "id": 20,
+        "lastLoginDate": null,
+        "mobileNo": "0751111111",
+        "modifiedDate": "2020-05-29T11:05:50",
+        "status": "ACTIVE",
+        "userProfile": null,
+        "userType": "ADMIN",
+        "vehicles": []
+    },
+    "message": "User Found",
+    "status": 1
+}

@@ -12,7 +12,7 @@ const windowHeight = Dimensions.get('window').height;
 export default class Payment extends React.Component {
     render = () => {
         return (
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView style={styles.safe}>
                 {/* <View style={ExStyles.headerview}>
                 </View> */}
 
@@ -25,7 +25,7 @@ export default class Payment extends React.Component {
                     </TouchableOpacity>
                 </View>
 
-                <View style={{ flex: 1 }}>
+                <View style={{  flex: 1, backgroundColor: 'white'}}>
                     {/* <Text style={ExStyles.headertext}>
                         Payment
                     </Text> */}
@@ -103,6 +103,10 @@ export default class Payment extends React.Component {
 }
 
 const styles = StyleSheet.create({
+    safe: {
+        flex: 1,
+        backgroundColor: '#0099e5'
+    },
     headerbar2: {
         flexDirection: 'row',
         backgroundColor: '#0099e5',

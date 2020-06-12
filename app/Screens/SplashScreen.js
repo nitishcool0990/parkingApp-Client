@@ -14,8 +14,9 @@ export default class SplashScreen extends React.Component {
                 if (values == null) {
                     Actions.login2();
                 } else {
-                    //alert(JSON.stringify(this.decodeJWTToken(values)));
-                    this.findUserByIdFunction(values, '20');
+                    var data = JSON.parse(values);
+
+                    this.findUserByIdFunction(data.token, data.user_id);
                 }
             });
 
@@ -23,17 +24,10 @@ export default class SplashScreen extends React.Component {
 
     }
 
-    decodeJWTToken = (token) => {
-        // var token = 'eyJ0eXAiO.../// jwt token';
-        var decoded = jwtDecode(token);
-        console.log(decoded);
-        return decoded;
-    }
-
     findUserByIdFunction = (token, id) => {
-        findUserById(token, id).then((value) => {     
+        findUserById(token, id).then((value) => {
             console.warn(value);
-            Actions.home({ 'token': token });
+            Actions.main({currenttoken: token });
         }).catch((error) => {
             Actions.login2();
         });

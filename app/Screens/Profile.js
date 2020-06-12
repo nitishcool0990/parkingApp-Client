@@ -5,13 +5,13 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import ActionSheet from 'react-native-actionsheet';
 import ExStyles from '../Utility/Styles';
 import { Actions } from 'react-native-router-flux';
-import { createNewUser, findUserProfile, } from '../Netowrks/server';
-
+import { createNewUser, findUserProfile,updateUser } from '../Netowrks/server';
+import { removeValue, getData } from '../AsyncStorage/AsyncStorage';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-export default class Account extends React.Component {
+export default class Profile extends React.Component {
 
     state = {
         country_code: 'IN +91',
@@ -25,11 +25,22 @@ export default class Account extends React.Component {
         password: '',
         ref_code: '',
         check: 'car',
-
+        status: 0,
     }
 
-    componentDidMount=()=>{
-       this.getUserdetails();
+    componentDidMount = () => {
+        getData('token', (value) => {
+            if (value != undefined) {
+                this.setState({
+                    status: 1
+                });
+            } else {
+                this.setState({
+                    status: 0
+                });
+            }
+        });
+        this.getUserdetails();
     }
 
     registerFunction = () => {
@@ -48,9 +59,10 @@ export default class Account extends React.Component {
         } else {
             var status = 'ACTIVE';
             var userType = 'ADMIN';
+          
             createNewUser(this.state.mobile_number, this.state.first_name, this.state.last_name, this.state.email, this.state.city, this.state.password, status, userType).then((data) => {
                 alert(JSON.stringify(data));
-                Actions.push('addvehicles');
+                Actions.push('login2');
 
             }).catch((error) => {
                 alert(JSON.stringify(error));
@@ -58,32 +70,55 @@ export default class Account extends React.Component {
         }
     }
 
-    updateFunction = () => {
+    
 
+    updateFunction = () => {
+        if (this.state.first_name == '') {
+            alert('Enter fisrt name');
+        } else if (this.state.last_name == '') {
+            alert('Enter last name');
+        } else if (this.state.email == '') {
+            alert('Enter email');
+        } else if (this.state.mobile_number == '') {
+            alert('Enter mobile number');
+        } else if (this.state.city == '') {
+            alert('Enter city');
+        } else if (this.state.password == '') {
+            alert('Enter password');
+        } else {
+            var status = 'ACTIVE';
+            var userType = 'ADMIN';
+            updateUser(this.props.token,this.state.mobile_number, this.state.first_name, this.state.last_name, this.state.email, this.state.city, this.state.password, status, userType).then((data) => {
+                alert(JSON.stringify(data));
+               
+            }).catch((error) => {
+                alert(JSON.stringify(error));
+            })
+        }
     }
 
     getUserdetails = () => {
-        findUserProfile(this.props.token,this.props.user_id)
-        .then(values => {
-            console.log('#### findUserProfile :' + JSON.stringify(values.data));
-            if (values.data != undefined) {
-                this.setState({
-                    dataArray: values.data,
-                    first_name:values.data.firstName,
-                    last_name:values.data.lastName,
-                    email:values.data.email,
-                    mobile_number:values.data.mobileNo,
-                    city:values.data.city,
-                    id:values.data.id
-                }, () => {
-                   alert(values.data);
-                });
-            }
-        })
-        .catch(error => {
-            console.log('Api call findUserProfile error:' + error.message);
-            this.setState({ isFetching: false });
-        });
+        findUserProfile(this.props.token, this.props.user_id)
+            .then(values => {
+                console.log('#### findUserProfile :' + JSON.stringify(values.data));
+                if (values.data != undefined) {
+                    this.setState({
+                        dataArray: values.data,
+                        first_name: values.data.firstName,
+                        last_name: values.data.lastName,
+                        email: values.data.email,
+                        mobile_number: values.data.mobileNo,
+                        city: values.data.city,
+                        id: values.data.id
+                    }, () => {
+                        alert(values.data);
+                    });
+                }
+            })
+            .catch(error => {
+                console.log('Api call findUserProfile error:' + error.message);
+                this.setState({ isFetching: false });
+            });
     }
 
     textFieldComponent = (fieldname, val, reg) => {
@@ -281,17 +316,32 @@ export default class Account extends React.Component {
                                 <Text> I accept to receive notifications from companies related to different sections by any means and suited to my profile.</Text>
                             </View>
 
-                            <TouchableOpacity
-                                style={{
-                                    marginTop: 10,
-                                    padding: 15,
-                                    margin: 5,
-                                    backgroundColor: '#0099e5',
-                                    borderRadius: 5
-                                }}
-                                onPress={() => { this.registerFunction() }}>
-                                <Text style={{ textAlign: 'center', color: 'white' }}>REGISTER</Text>
-                            </TouchableOpacity>
+                            {(this.state.status == 0) ?
+                                <TouchableOpacity
+                                    style={{
+                                        marginTop: 10,
+                                        padding: 15,
+                                        margin: 5,
+                                        backgroundColor: '#0099e5',
+                                        borderRadius: 5
+                                    }}
+                                    onPress={() => { this.registerFunction() }}>
+                                    <Text style={{ textAlign: 'center', color: 'white' }}>REGISTER</Text>
+                                </TouchableOpacity>
+                                :
+                                <TouchableOpacity
+                                    style={{
+                                        marginTop: 10,
+                                        padding: 15,
+                                        margin: 5,
+                                        backgroundColor: '#0099e5',
+                                        borderRadius: 5
+                                    }}
+                                    onPress={() => { this.updateFunction() }}>
+                                    <Text style={{ textAlign: 'center', color: 'white' }}>UPDATE</Text>
+                                </TouchableOpacity>
+                            }
+
                         </View>
                     </ScrollView>
                 </View>

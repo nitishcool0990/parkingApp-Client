@@ -4,6 +4,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import TabbarComponent from '../Components/TabbarComponent';
 import ExStyles from '../Utility/Styles';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Actions } from 'react-native-router-flux';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;

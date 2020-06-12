@@ -22,6 +22,7 @@ import AddReview from './app/Screens/AddReview';
 import Wallet from './app/Screens/Wallet';
 import AddVehiclepark from './app/Screens/AddVehiclePark';
 import MyPark from './app/Screens/MyPark';
+import LocationSelecterMap from './app/Screens/LocationSelecterMap';
 
 
 export default class App extends React.Component {
@@ -65,6 +66,7 @@ export default class App extends React.Component {
             <Scene key="wallet" component={Wallet} title="Wallet" />
             <Scene key="addvehiclepark" component={AddVehiclepark} title="Add Vehicle Park" />
             <Scene key="mypark" component={MyPark} title="My Park" />
+            <Scene key="locationselectmap" component={LocationSelecterMap} title="Location Selecter Map"/>
           </Stack>
         </Stack>
       </Router>

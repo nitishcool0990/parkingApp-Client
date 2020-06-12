@@ -5,7 +5,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import ActionSheet from 'react-native-actionsheet';
 import ExStyles from '../Utility/Styles';
 import { Actions } from 'react-native-router-flux';
-import { createNewUser } from '../Netowrks/server';
+import { createNewVehicle } from '../Netowrks/server';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -13,43 +13,26 @@ const windowHeight = Dimensions.get('window').height;
 export default class AddVehicle extends React.Component {
 
     state = {
-        country_code: '- select vehicle type -',
-        countrycodes: ['Bike','Car', 'Van', 'cancel'],
+        selected_vehicle_type: '- select vehicle type -',
+        vehicle_type: ['BIKE','CAR', 'VAN', 'cancel'],
         checkbox: false,
-        first_name: '',
-        last_name: '',
-        email: '',
-        mobile_number: '',
-        city: '',
-        password: '',
-        ref_code: '',
-        check: 'car',
+        vehicle_number:''
 
     }
 
     registerFunction = () => {
-        // if (this.state.first_name == '') {
-        //     alert('Enter fisrt name');
-        // } else if (this.state.last_name == '') {
-        //     alert('Enter last name');
-        // } else if (this.state.email == '') {
-        //     alert('Enter email');
-        // } else if (this.state.mobile_number == '') {
-        //     alert('Enter mobile number');
-        // } else if (this.state.city == '') {
-        //     alert('Enter city');
-        // } else if (this.state.password == '') {
-        //     alert('Enter password');
-        // } else {
-        //     var status = 'ACTIVE';
-        //     var userType = 'ADMIN';
-        //     createNewUser(this.state.mobile_number, this.state.first_name, this.state.last_name, this.state.email, this.state.city, this.state.password, status, userType).then((data) => {
-        //         alert(JSON.stringify(data));
-        //     }).catch((error) => {
-        //         alert(JSON.stringify(error));
-        //     })
-        // }
-        Actions.login2();
+        if (this.state.selected_vehicle_type == '') {
+            alert('Select vehicle type');
+        } else if (this.state.vehicle_number == '') {
+            alert('Enter vehicle number');
+        } else {
+            createNewVehicle(this.props.token,this.props.user_id,this.state.vehicle_number,this.state.selected_vehicle_type).then((data) => {
+                alert(JSON.stringify(data));
+            }).catch((error) => {
+                alert(JSON.stringify(error));
+            })
+        }
+        //Actions.login2();
     }
 
     textFieldComponent = (fieldname, val, reg) => {
@@ -123,22 +106,22 @@ export default class AddVehicle extends React.Component {
                                     borderWidth: 1,
                                     marginTop: 5
                                 }}
-                            >{this.state.country_code}</Text>
+                            >{this.state.selected_vehicle_type}</Text>
 
                             <ActionSheet
                                 ref={o => this.ActionSheet = o}
                                 title={'Select country code ?'}
-                                options={this.state.countrycodes}
-                                cancelButtonIndex={this.state.countrycodes.length}
-                                destructiveButtonIndex={this.state.countrycodes.length - 1}
+                                options={this.state.vehicle_type}
+                                cancelButtonIndex={this.state.vehicle_type.length}
+                                destructiveButtonIndex={this.state.vehicle_type.length - 1}
                                 onPress={(index) => {
-                                    if (index != this.state.countrycodes.length - 1) {
+                                    if (index != this.state.vehicle_type.length - 1) {
                                         this.setState({
-                                            country_code: this.state.countrycodes[index]
+                                            selected_vehicle_type: this.state.vehicle_type[index]
                                         });
                                     }else{
                                         this.setState({
-                                            country_code: '- select vehicle type -'
+                                            selected_vehicle_type: '- select vehicle type -'
                                         });
                                     }
 

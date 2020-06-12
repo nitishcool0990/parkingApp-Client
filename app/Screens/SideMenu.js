@@ -7,19 +7,13 @@ import { removeValue, getData } from '../AsyncStorage/AsyncStorage';
 var jwtDecode = require('jwt-decode');
 
 export default class SideMenu extends React.Component {
-
-    decodeJWTToken = (token) => {
-        var decoded = jwtDecode(token);
-        console.log(decoded);
-        return decoded.user_id;
-    }
-
     render = () => {
-       var user_id="20";
+       var user_id="";
        var token="";
         getData('token', (value) => {
-            //user_id= this.decodeJWTToken(value);
-            token=value;
+           var data= JSON.parse(value);
+         user_id = data.user_id;
+         token = data.token;
         });
         return (
             <SafeAreaView style={styles.safe}>
@@ -115,7 +109,7 @@ export default class SideMenu extends React.Component {
                             flexDirection: 'row'
                         }}
                         onPress={() => {
-                            Actions.push('parking');
+                            Actions.push('parking',{'user_id':user_id,'token':token});
                             Actions.drawerClose();
                         }}>
                         <FontAwesome name={'circle'} size={18} style={{ marginHorizontal: 5 }} />

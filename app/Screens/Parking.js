@@ -25,7 +25,7 @@ export default class Parking extends React.Component {
 
     render() {
         return (
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView style={styles.safe}>
                 {/* <View style={ExStyles.headerview}>
                 </View> */}
                 <View style={styles.headerbar}>
@@ -33,7 +33,7 @@ export default class Parking extends React.Component {
                             <FontAwesome name={'chevron-left'} size={20} color={'black'} />
                         </TouchableOpacity>
                     </View>
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1,backgroundColor:'white'}}>
                     {/* <Text style={ExStyles.headertext}>
                         Parking
                     </Text> */}
@@ -58,6 +58,7 @@ export default class Parking extends React.Component {
                                 </TouchableOpacity>
                             );
                         }}
+                        keyExtractor={(item, index) => item.key}
                     />
 
                     <TouchableOpacity style={{
@@ -68,12 +69,12 @@ export default class Parking extends React.Component {
                         width: 55,
                         height: 55,
                         elevation: 4,
-                        backgroundColor: 'white',
+                        backgroundColor: '#0099e5',
                         alignItems:'center',
                         justifyContent:'center'
                     }}
                     onPress={()=>{
-                        Actions.push('addvehiclepark');
+                        Actions.push('addvehiclepark',{'user_id':this.props.user_id,'token':this.props.token});
                     }}
                     >
                         <FontAwesome name={'plus'} size={20} />
@@ -86,6 +87,10 @@ export default class Parking extends React.Component {
 }
 
 const styles = StyleSheet.create({
+    safe: {
+        flex: 1,
+        backgroundColor: '#0099e5',
+    },
     scene: {
         flex: 1,
     },

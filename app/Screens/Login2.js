@@ -15,27 +15,34 @@ export default class Login2 extends React.Component {
         dataArray: ''
     };
 
-    decodeJWTToken = (token) => {
+    decodeJWTToken = (token, then) => {
         var decoded = jwtDecode(token);
-        console.log(decoded);
+        // console.log("## :"+JSON.stringify(decoded.user_id));
+        then(decoded);
     }
 
     authonticateFunction = () => {
         authonticate(this.state.username, this.state.password)
             .then(values => {
                 console.log('#### authonticate :' + JSON.stringify(values));
-                if(values.status==400){
+                if (values.status == 1) {
                     if (values.data != undefined) {
                         this.setState({
                             dataArray: values.data
                         }, () => {
-                            storeData('token', values.data.token);
-                            this.decodeJWTToken(values.data.token);
-                            //Actions.home();
+                            this.decodeJWTToken(values.data.token, (value) => {
+
+                                const data={
+                                    token:values.data.token,
+                                    user_id:String(value.user_id)
+                                }
+                                storeData('token', JSON.stringify(data));
+                                Actions.home();
+                            });        
                         });
                     }
-                } else{
-                    alert(values.status+'-'+values.error);
+                } else {
+                    alert(values.status + '-' + values.error);
                 }
             })
             .catch(error => {
