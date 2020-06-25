@@ -4,7 +4,7 @@ const BASE_ADDRESS = 'http://3.7.155.186:8092/vpark/api';
 
 //SignUp 
 
-async function Signup (mobileNo) {
+async function Signup(mobileNo) {
 
   try {
     const url = BASE_ADDRESS + '/users/v1/userMobileReg/' + mobileNo;
@@ -29,10 +29,10 @@ async function Signup (mobileNo) {
 }
 
 //Verifiy OTP
-async function VerifyOTP (mobileNo,otp) {
+async function VerifyOTP(mobileNo, otp) {
 
   try {
-    const url = BASE_ADDRESS + '/users/v1/verifyOTP/' + mobileNo+"/"+otp;
+    const url = BASE_ADDRESS + '/users/v1/verifyOTP/' + mobileNo + "/" + otp;
     let responce = await fetch(url, {
       method: 'GET',
       headers: {
@@ -54,17 +54,17 @@ async function VerifyOTP (mobileNo,otp) {
 }
 
 //Create Profile
-async function CreateProfile (mobileNo,password,email,firstName,lastName,userType) {
+async function CreateProfile(mobileNo, password, email, firstName, lastName, userType) {
 
-  const data={
-    mobileNo:mobileNo,
-    password:password,
-    userProfile:{
-      email:email,
-      firstName:firstName,
-      lastName:lastName
+  const data = {
+    mobileNo: mobileNo,
+    password: password,
+    userProfile: {
+      email: email,
+      firstName: firstName,
+      lastName: lastName
     },
-    userType:userType
+    userType: userType
   }
 
   try {
@@ -91,11 +91,11 @@ async function CreateProfile (mobileNo,password,email,firstName,lastName,userTyp
 }
 
 //Login
-async function Login (userName,password) {
+async function Login(userName, password) {
 
-  const data={
-    userName:userName,
-    password:password
+  const data = {
+    userName: userName,
+    password: password
   }
 
   try {
@@ -122,7 +122,7 @@ async function Login (userName,password) {
 }
 
 //View Profile
-async function ViewProfile (Token) {
+async function ViewProfile(Token) {
 
   try {
     const url = BASE_ADDRESS + '/users/v1/profile';
@@ -148,15 +148,15 @@ async function ViewProfile (Token) {
 }
 
 //Update Profile
-async function UpdateProfile (Token,firstName,lastName,email) {
-  const data={
-    firstName:firstName,
-    lastName:lastName,
-    email:email,
+async function UpdateProfile(Token, firstName, lastName, email) {
+  const data = {
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
   }
 
   try {
-    const url = BASE_ADDRESS + '/users/v1/profile';
+    const url = BASE_ADDRESS + '/users/v1/updateprofile';
     let responce = await fetch(url, {
       method: 'PATCH',
       headers: {
@@ -168,19 +168,20 @@ async function UpdateProfile (Token,firstName,lastName,email) {
     });
     let responce_Values = await responce.text();
 
-    console.log("#### Signup url:" + url);
-    console.log("#### Signup :" + responce_Values);
+    console.log("#### UpdateProfile url:" + url);
+    console.log("#### UpdateProfile data:" + JSON.stringify(data));
+    console.log("#### UpdateProfile :" + responce_Values);
 
     return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
   } catch (error) {
     //  alert('###: server error - getLogin : ' + JSONerror);
-    console.log('### :Network call error - Signup : ' + error);
+    console.log('### :Network call error - UpdateProfile : ' + error);
     throw error;
   }
 }
 
 //GetVehicleTypeList
-async function getVehicleTypeList (Token) {
+async function getVehicleTypeList(Token) {
 
   try {
     const url = BASE_ADDRESS + '/vehicles/v1/type';
@@ -191,7 +192,7 @@ async function getVehicleTypeList (Token) {
         'Content-Type': 'application/json',
         'Authorization': "Bearer " + Token
       },
-      body: JSON.stringify(data),
+      // body: JSON.stringify(data),
     });
     let responce_Values = await responce.text();
 
@@ -208,12 +209,12 @@ async function getVehicleTypeList (Token) {
 
 //Create New Vehicle
 
-async function createNewVehicle_New (Token,vehicleNo,vehicleTypeId,isDefault) {
+async function createNewVehicle_New(Token, vehicleNo, vehicleTypeId, isDefault) {
 
-  const data={
-    vehicleNo:vehicleNo,
-    vehicleTypeId:vehicleTypeId,
-    isDefault:isDefault
+  const data = {
+    vehicleNo: vehicleNo,
+    vehicleTypeId: vehicleTypeId,
+    isDefault: (isDefault == true) ? 'TRUE' : 'FALSE'
   }
 
   try {
@@ -230,6 +231,7 @@ async function createNewVehicle_New (Token,vehicleNo,vehicleTypeId,isDefault) {
     let responce_Values = await responce.text();
 
     console.log("#### createNewVehicle_New url:" + url);
+    console.log("#### createNewVehicle_New data:" + JSON.stringify(data));
     console.log("#### createNewVehicle_New :" + responce_Values);
 
     return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
@@ -242,12 +244,14 @@ async function createNewVehicle_New (Token,vehicleNo,vehicleTypeId,isDefault) {
 
 //Update Vehicle
 
-async function updateVehicle (Token,vehicleNo,vehicleTypeId,vehicleType,isDefault) {
+async function updateVehicle(Token, id, vehicleNo, vehicleTypeId, vehicleType, isDefault) {
 
-  const data={
-    vehicleNo:vehicleNo,
-    vehicleTypeId:vehicleTypeId,
-    isDefault:isDefault
+  const data = {
+    id: id,
+    vehicleNo: vehicleNo,
+    vehicleTypeId: vehicleTypeId,
+    vehicleType: vehicleType,
+    isDefault: (isDefault == true) ? 'TRUE' : 'FALSE'
   }
 
   try {
@@ -264,6 +268,7 @@ async function updateVehicle (Token,vehicleNo,vehicleTypeId,vehicleType,isDefaul
     let responce_Values = await responce.text();
 
     console.log("#### updateVehicle url:" + url);
+    console.log("#### updateVehicle date:" + JSON.stringify(data));
     console.log("#### updateVehicle :" + responce_Values);
 
     return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
@@ -276,7 +281,7 @@ async function updateVehicle (Token,vehicleNo,vehicleTypeId,vehicleType,isDefaul
 
 //Get Vehicle Data
 
-async function getVehicleDetails (Token) {
+async function getVehicleDetails(Token) {
 
   try {
     const url = BASE_ADDRESS + '/vehicles/v1';
@@ -302,10 +307,10 @@ async function getVehicleDetails (Token) {
 }
 
 //Delete Vehicle 
-async function deleteVehicle_new (Token,id) {
+async function deleteVehicle_new(Token, id) {
 
   try {
-    const url = BASE_ADDRESS + '/vehicles/v1/'+id;
+    const url = BASE_ADDRESS + '/vehicles/v1/' + id + '/delete';
     let responce = await fetch(url, {
       method: 'DELETE',
       headers: {
@@ -317,6 +322,7 @@ async function deleteVehicle_new (Token,id) {
     let responce_Values = await responce.text();
 
     console.log("#### deleteVehicle url:" + url);
+    console.log("#### deleteVehicle data:" + id + " Token" + Token);
     console.log("#### deleteVehicle :" + responce_Values);
 
     return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
@@ -328,12 +334,12 @@ async function deleteVehicle_new (Token,id) {
 }
 
 //Search Park Location
-async function searchParkLocation (Token,lattitude,longitude,vehicleTypeId) {
+async function searchParkLocation(Token, lattitude, longitude, vehicleTypeId) {
 
-  const data={
-    lattitude:lattitude,
-    longitude:longitude,
-    vehicleTypeId:vehicleTypeId
+  const data = {
+    lattitude: lattitude,
+    longitude: longitude,
+    vehicleTypeId: vehicleTypeId
   }
 
   try {
@@ -361,10 +367,10 @@ async function searchParkLocation (Token,lattitude,longitude,vehicleTypeId) {
 }
 
 //Show parking details
-async function showParkingDetails (Token,parkingId,vehicleId) {
+async function showParkingDetails(Token, parkingId, vehicleId) {
 
   try {
-    const url = BASE_ADDRESS + '/booking/v1/parkingInfo/'+parkingId+"/"+vehicleId;
+    const url = BASE_ADDRESS + '/booking/v1/parkingInfo/' + parkingId + "/" + vehicleId;
     let responce = await fetch(url, {
       method: 'GET',
       headers: {
@@ -387,12 +393,12 @@ async function showParkingDetails (Token,parkingId,vehicleId) {
 }
 
 //Booking
-async function Booking (Token,BookingTime,totalHrs,bookingFees) {
+async function Booking(Token, BookingTime, totalHrs, bookingFees) {
 
-  const data={
-    BookingTime:BookingTime,
-    totalHrs:totalHrs,
-    bookingFees:bookingFees
+  const data = {
+    BookingTime: BookingTime,
+    totalHrs: totalHrs,
+    bookingFees: bookingFees
   }
 
   try {
@@ -418,6 +424,65 @@ async function Booking (Token,BookingTime,totalHrs,bookingFees) {
     throw error;
   }
 }
+
+
+
+//Add Parking Location in System API
+async function AddParkingLocation(Token, images,) {
+
+  const data = {
+    images: images,
+    parkingLoc: {
+      parkName: 'DDA Park 2',
+      parkAddress: 'south Delhi',
+      latitude: '67.492775999999998',
+      longitude: '89.67608642578126',
+      parkRegion: 'New Delhi',
+      openTime: '10:00 AM',
+      closeTime: '11:00 PM',
+      description: 'Description Text',
+      parkingTypeId: 2,
+      parkingDetailsDtos: [
+        {
+          "vehicleTypeId": 3,
+          "hourlyRate": 15,
+          "monthlyRate": 200,
+          "capacity": 20
+        },
+        {
+          "vehicleTypeId": 4,
+          "hourlyRate": 35,
+          "monthlyRate": 500,
+          "capacity": 45
+        }]
+    },
+  }
+
+  try {
+    const url = BASE_ADDRESS + '/agent/v1/create';
+    let responce = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+      body: JSON.stringify(data),
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### AddParkingLocation url:" + url);
+    console.log("#### AddParkingLocation :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - AddParkingLocation : ' + error);
+    throw error;
+  }
+}
+
+//Get All Parkings Location of Agent API
 
 
 //.................Old APIs....................//
@@ -1331,16 +1396,18 @@ export { Signup };
 export { VerifyOTP };
 export { CreateProfile };
 export { Login };
-export {ViewProfile};
-export {UpdateProfile};
-export {getVehicleTypeList};
-export {createNewVehicle_New};
-export {getVehicleDetails};
-export {searchParkLocation};
-export {deleteVehicle_new};
-export {updateVehicle_new};
-export {showParkingDetails};
-export {Booking};
+export { ViewProfile };
+export { UpdateProfile };
+export { getVehicleTypeList };
+export { createNewVehicle_New };
+export { getVehicleDetails };
+export { searchParkLocation };
+export { deleteVehicle_new };
+export { updateVehicle_new };
+export { showParkingDetails };
+export { Booking };
+
+export {AddParkingLocation};
 
 
 

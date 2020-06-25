@@ -5,8 +5,9 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import ActionSheet from 'react-native-actionsheet';
 import ExStyles from '../Utility/Styles';
 import { Actions } from 'react-native-router-flux';
-import { createNewUser, findUserProfile,updateUser,CreateProfile } from '../Netowrks/server';
+import { createNewUser, findUserProfile, updateUser, CreateProfile, UpdateProfile, ViewProfile } from '../Netowrks/server';
 import { removeValue, getData } from '../AsyncStorage/AsyncStorage';
+import ActivityIndicatorView from '../Components/ActivityIndicatorView';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -33,19 +34,20 @@ export default class Profile extends React.Component {
             if (value != undefined) {
                 this.setState({
                     status: 1
+                }, () => {
+                    this.getUserdetails();
                 });
             } else {
                 this.setState({
                     status: 0
-                },()=>{
-                    this.getUserdetails();
                 });
             }
         });
-        
+
     }
 
     registerFunction = () => {
+
         if (this.state.first_name == '') {
             alert('Enter fisrt name');
         } else if (this.state.last_name == '') {
@@ -58,21 +60,32 @@ export default class Profile extends React.Component {
             alert('Enter city');
         } else if (this.state.password == '') {
             alert('Enter password');
-        } else {
+        } 
+        // else if (this.state.checkbox) {
+        //     alert('Accept terms and conditions');
+        // } 
+        else {
             var status = 'ACTIVE';
             var userType = 'ADMIN';
-          
-            CreateProfile(this.state.mobile_number, this.state.password, this.state.email, this.state.first_name, this.state.last_name, userType).then((data) => {
-                alert(JSON.stringify(data));
-                Actions.push('login2');
+            this.setState({
+                isFetching: true,
+            }, () => {
+                CreateProfile(this.state.mobile_number, this.state.password, this.state.email, this.state.first_name, this.state.last_name, userType).then((data) => {
+                    this.setState({
+                        isFetching: false
+                    }, () => {
+                        Actions.push('login2');
+                    });
 
-            }).catch((error) => {
-                alert(JSON.stringify(error));
-            })
+                }).catch((error) => {
+                    alert(JSON.stringify(error));
+                })
+            });
+
         }
     }
 
-    
+
 
     updateFunction = () => {
         if (this.state.first_name == '') {
@@ -81,46 +94,65 @@ export default class Profile extends React.Component {
             alert('Enter last name');
         } else if (this.state.email == '') {
             alert('Enter email');
-        } else if (this.state.mobile_number == '') {
-            alert('Enter mobile number');
-        } else if (this.state.city == '') {
-            alert('Enter city');
-        } else if (this.state.password == '') {
-            alert('Enter password');
         } else {
             var status = 'ACTIVE';
             var userType = 'ADMIN';
-            updateUser(this.props.token,this.state.mobile_number, this.state.first_name, this.state.last_name, this.state.email, this.state.city, this.state.password, status, userType).then((data) => {
-                alert(JSON.stringify(data));
-               
-            }).catch((error) => {
-                alert(JSON.stringify(error));
+            this.setState({
+                isFetching: true,
+            }, () => {
+                UpdateProfile(
+                    this.props.token,
+                    this.state.first_name,
+                    this.state.last_name,
+                    this.state.email,
+                ).then((data) => {
+                    this.setState({
+                        isFetching: false
+                    }, () => {
+                        if (data.status == 1) {
+                            alert(data.message);
+                        } else {
+
+                        }
+                    });
+
+                }).catch((error) => {
+                    this.setState({
+                        isFetching: false
+                    }, () => {
+                        alert(JSON.stringify(error));
+                    });
+                })
             })
         }
     }
 
     getUserdetails = () => {
-        findUserProfile(this.props.token, this.props.user_id)
-            .then(values => {
-                console.log('#### findUserProfile :' + JSON.stringify(values.data));
-                if (values.data != undefined) {
-                    this.setState({
-                        dataArray: values.data,
-                        first_name: values.data.firstName,
-                        last_name: values.data.lastName,
-                        email: values.data.email,
-                        mobile_number: values.data.mobileNo,
-                        city: values.data.city,
-                        id: values.data.id
-                    }, () => {
-                        alert(values.data);
-                    });
-                }
-            })
-            .catch(error => {
-                console.log('Api call findUserProfile error:' + error.message);
-                this.setState({ isFetching: false });
-            });
+        this.setState({
+            isFetching: true
+        }, () => {
+            ViewProfile(this.props.token)
+                .then(values => {
+                    console.log('#### findUserProfile :' + JSON.stringify(values.data));
+                    if (values.data != undefined) {
+                        this.setState({
+                            dataArray: values.data,
+                            first_name: values.data.firstName,
+                            last_name: values.data.lastName,
+                            email: values.data.email,
+                            mobile_number: values.data.mobileNo,
+                            city: values.data.city,
+                            id: values.data.id,
+                            isFetching: false
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.log('Api call findUserProfile error:' + error.message);
+                    this.setState({ isFetching: false });
+                });
+        });
+
     }
 
     textFieldComponent = (fieldname, val, reg) => {
@@ -347,7 +379,11 @@ export default class Profile extends React.Component {
                         </View>
                     </ScrollView>
                 </View>
-
+                {(this.state.isFetching == true) ?
+                    <ActivityIndicatorView />
+                    :
+                    null
+                }
             </SafeAreaView>
         );
     }

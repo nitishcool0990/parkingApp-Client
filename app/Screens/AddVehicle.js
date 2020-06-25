@@ -5,7 +5,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import ActionSheet from 'react-native-actionsheet';
 import ExStyles from '../Utility/Styles';
 import { Actions } from 'react-native-router-flux';
-import { createNewVehicle } from '../Netowrks/server';
+import { createNewVehicle_New, getVehicleTypeList, updateVehicle } from '../Netowrks/server';
+import ActivityIndicatorView from '../Components/ActivityIndicatorView';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -14,9 +15,57 @@ export default class AddVehicle extends React.Component {
 
     state = {
         selected_vehicle_type: '- select vehicle type -',
-        vehicle_type: ['BIKE','CAR', 'VAN', 'cancel'],
+        selected_vehicle_type_id: '- select vehicle type id -',
+        vehicle_type: ['BIKE', 'CAR', 'VAN', 'cancel'],
+        vehicle_type_id: [],
         checkbox: false,
-        vehicle_number:''
+        id:'',
+        vehicle_number: ''
+
+    }
+
+    componentDidMount = () => {
+        this.getVehicleTypeListFunction();
+        if (this.props.type == 'update') {
+            this.setState({
+                vehicle_number: this.props.data.vehicleNo,
+                selected_vehicle_type: this.props.data.vehicleType,
+                selected_vehicle_type_id: this.props.data.id,
+                checkbox: this.props.data.isDefault,
+                id:this.props.data.id
+            });
+        }
+    }
+
+
+    getVehicleTypeListFunction = () => {
+        this.setState({
+            isFetching: true
+        }, () => {
+            getVehicleTypeList(this.props.token).then((values) => {
+                if (values.status == 1) {
+
+                    var vehicle_type_name = [];
+                    var vehicle_type_id = [];
+
+                    values.data.map((val) => {
+                        vehicle_type_name.push(val.vehicleName);
+                        vehicle_type_id.push(val.id);
+                    });
+
+                    vehicle_type_name.push('cancel');
+                    vehicle_type_id.push(0);
+
+                    this.setState({
+                        vehicle_type: vehicle_type_name,
+                        vehicle_type_id: vehicle_type_id,
+                        isFetching: false
+                    });
+                }
+            }).catch((error) => {
+                alert(error);
+            });
+        });
 
     }
 
@@ -26,11 +75,34 @@ export default class AddVehicle extends React.Component {
         } else if (this.state.vehicle_number == '') {
             alert('Enter vehicle number');
         } else {
-            createNewVehicle(this.props.token,this.props.user_id,this.state.vehicle_number,this.state.selected_vehicle_type).then((data) => {
-                alert(JSON.stringify(data));
-            }).catch((error) => {
-                alert(JSON.stringify(error));
-            })
+            this.setState({
+                isFetching: true
+            }, () => {
+                createNewVehicle_New(this.props.token, this.state.vehicle_number, this.state.selected_vehicle_type_id, this.state.checkbox).then((data) => {
+                    if (data.status == 1) {
+                        this.setState({
+                            vehicle_number: '',
+                            selected_vehicle_type: '- select vehicle type -',
+                            selected_vehicle_type_id: '- select vehicle type -',
+                            checkbox: false,
+                            isFetching: false
+                        }, () => {
+                            alert(data.message);
+                            this.props.load_vehicle();
+                        });
+
+                    } else {
+
+                    }
+                }).catch((error) => {
+                    this.setState({
+                        isFetching: false
+                    }, () => {
+                        alert(JSON.stringify(error));
+                    });
+                })
+            });
+
         }
         //Actions.login2();
     }
@@ -73,6 +145,46 @@ export default class AddVehicle extends React.Component {
         this.ActionSheet.show()
     }
 
+    updateVehicleFunction = () => {
+        if (this.state.selected_vehicle_type == '') {
+            alert('Select vehicle type');
+        } else if (this.state.vehicle_number == '') {
+            alert('Enter vehicle number');
+        } else {
+            this.setState({
+                isFetching: true
+            }, () => {
+                updateVehicle(this.props.token,this.state.id, this.state.vehicle_number, this.state.selected_vehicle_type_id, this.state.selected_vehicle_type, this.state.checkbox).then((data) => {
+                    if (data.status == 1) {
+                        this.setState({
+                            vehicle_number: '',
+                            selected_vehicle_type: '- select vehicle type -',
+                            selected_vehicle_type_id: '- select vehicle type -',
+                            checkbox: false
+                        }, () => {
+                            alert(data.message);
+                            this.props.load_vehicle();
+                        });
+
+                    } else {
+                        this.setState({
+                            isFetching: false
+                        }, () => {
+                            alert(data.message);
+                        });
+                    }
+                }).catch((error) => {
+                    this.setState({
+                        isFetching: false
+                    }, () => {
+                        alert(JSON.stringify(error));
+                    });
+                })
+            })
+        }
+
+    }
+
     render = () => {
         return (
             <SafeAreaView style={styles.safe}>
@@ -90,7 +202,7 @@ export default class AddVehicle extends React.Component {
                     <View style={{ marginTop: 10, marginHorizontal: 20 }}>
 
                         <View>
-                            <View style={{flexDirection:'row'}}>
+                            <View style={{ flexDirection: 'row' }}>
                                 <Text style={{ paddingVertical: 5 }}>
                                     Vehicle type
                                 </Text>
@@ -117,11 +229,13 @@ export default class AddVehicle extends React.Component {
                                 onPress={(index) => {
                                     if (index != this.state.vehicle_type.length - 1) {
                                         this.setState({
-                                            selected_vehicle_type: this.state.vehicle_type[index]
+                                            selected_vehicle_type: this.state.vehicle_type[index],
+                                            selected_vehicle_type_id: this.state.vehicle_type_id[index]
                                         });
-                                    }else{
+                                    } else {
                                         this.setState({
-                                            selected_vehicle_type: '- select vehicle type -'
+                                            selected_vehicle_type: '- select vehicle type -',
+                                            selected_vehicle_type_id: 0,
                                         });
                                     }
 
@@ -162,12 +276,16 @@ export default class AddVehicle extends React.Component {
                                 backgroundColor: '#0099e5',
                                 borderRadius: 5
                             }}
-                            onPress={() => { this.registerFunction() }}>
-                            <Text style={{ textAlign: 'center', color: 'white' }}>SAVE VEHICLE</Text>
+                            onPress={() => { (this.props.type != 'update') ? this.registerFunction() : this.updateVehicleFunction() }}>
+                            <Text style={{ textAlign: 'center', color: 'white' }}>{(this.props.type != 'update') ? 'SAVE VEHICLE' : 'UPDATE VEHICLE'}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
-
+                {(this.state.isFetching == true) ?
+                    <ActivityIndicatorView />
+                    :
+                    null
+                }
             </SafeAreaView>
         );
     }

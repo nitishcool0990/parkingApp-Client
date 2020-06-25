@@ -3,7 +3,8 @@ import { SafeAreaView, View, StyleSheet, Text, TouchableOpacity, Image, Dimensio
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import ExStyles from '../Utility/Styles';
 import { Actions } from 'react-native-router-flux';
-import { findAllVehicles } from '../Netowrks/server';
+import { findAllVehicles, deleteVehicle_new } from '../Netowrks/server';
+import ActivityIndicatorView from '../Components/ActivityIndicatorView';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -31,21 +32,28 @@ export default class Vehicles extends React.Component {
     }
 
     componentDidMount = () => {
-      
         this.findAllVehiclesFunction();
     }
 
     findAllVehiclesFunction = () => {
-        findAllVehicles(this.props.token,this.props.user_id,"","").then((value) => {
-            alert(JSON.stringify(value));
-            if (value.status == 1) {
-                alert(value)
-            } else {
-                alert("status :" + value.status + "-" + value.message);
-            }
-        }).catch((error) => {
-            alert(error)
-        })
+        this.setState({
+            isFetching: true
+        }, () => {
+            findAllVehicles(this.props.token, this.props.user_id, "", "").then((value) => {
+                if (value.status == 1) {
+                    this.setState({
+                        vehiclelist: value.data,
+                        isFetching: false
+                    });
+
+                } else {
+                    alert("status :" + value.status + "-" + value.message);
+                }
+            }).catch((error) => {
+                alert(error)
+            })
+        });
+
     }
 
     btnView = (name, sub, onPress) => {
@@ -70,6 +78,45 @@ export default class Vehicles extends React.Component {
                 <FontAwesome name={'angle-right'} size={30} color={'white'} />
             </TouchableOpacity>
         );
+    }
+
+    deleteVehicle = (id) => {
+        Alert.alert(
+            'Are you sure to you want to delete this vehicle',
+            '',
+            [
+                {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel'
+                },
+                {
+                    text: 'OK', onPress: () => {
+                        this.setState({
+                            isFetching: true
+                        }, () => {
+                            deleteVehicle_new(this.props.token, id).then((values) => {
+                                this.setState({
+                                    isFetching: false
+                                }, () => {
+                                    if (values.status == 1) {
+                                        this.findAllVehiclesFunction();
+                                    }
+                                });
+                            }).catch((error) => {
+                                this.setState({
+                                    isFetching: false
+                                }, () => {
+                                    alert(error);
+                                });
+                            });
+                        });
+                    }
+                }
+            ],
+            { cancelable: false }
+        );
+
     }
 
     render = () => {
@@ -98,16 +145,40 @@ export default class Vehicles extends React.Component {
                             data={this.state.vehiclelist}
                             renderItem={(item) => {
                                 return (
-                                    <View style={{ marginTop: 5, marginHorizontal: 5 }}>
-                                        <View style={{ flexDirection: 'row', padding: 5 }}>
-                                            <Text>Vehicle No :</Text>
-                                            <Text>{item.item.vehicle_no}</Text>
+                                    <TouchableOpacity style={{
+                                        marginTop: 5,
+                                        marginHorizontal: 5,
+                                        elevation: 4,
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between'
+                                    }}
+                                        onPress={() => {
+                                            Actions.push('addvehicles', {
+                                                'token': this.props.token,
+                                                'user_id': this.props.user_id,
+                                                load_vehicle: this.findAllVehiclesFunction.bind(this),
+                                                'type': 'update',
+                                                'data': item.item
+                                            })
+                                        }}
+                                    >
+                                        <View>
+                                            <View style={{ flexDirection: 'row', padding: 5 }}>
+                                                <Text>Vehicle No :</Text>
+                                                <Text>{item.item.vehicleNo}</Text>
+                                            </View>
+                                            <View style={{ flexDirection: 'row', padding: 5 }}>
+                                                <Text>Vehicle Type :</Text>
+                                                <Text>{item.item.vehicleType}</Text>
+                                            </View>
                                         </View>
-                                        <View style={{ flexDirection: 'row', padding: 5 }}>
-                                            <Text>Vehicle No :</Text>
-                                            <Text>{item.item.category}</Text>
-                                        </View>
-                                    </View>
+                                        <TouchableOpacity style={{ marginHorizontal: 10 }} onPress={() => {
+                                            this.deleteVehicle(item.item.id);
+                                        }}>
+                                            <FontAwesome name={'trash'} size={30} color={'red'} />
+                                        </TouchableOpacity>
+                                    </TouchableOpacity>
                                 );
                             }}
                         />
@@ -122,11 +193,16 @@ export default class Vehicles extends React.Component {
                             borderRadius: 5,
                             marginBottom: 30
                         }}
-                        onPress={() => { Actions.push('addvehicles',{'token':this.props.token,'user_id':this.props.user_id}) }}
+                        onPress={() => { Actions.push('addvehicles', { 'token': this.props.token, 'user_id': this.props.user_id, load_vehicle: this.findAllVehiclesFunction.bind(this) }) }}
                     >
                         <Text style={{ textAlign: 'center', color: 'white' }}>ADD Vehicle</Text>
                     </TouchableOpacity>
                 </View>
+                {(this.state.isFetching == true) ?
+                    <ActivityIndicatorView />
+                    :
+                    null
+                }
             </SafeAreaView>
         );
     }
