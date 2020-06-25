@@ -1,6 +1,427 @@
 
 const BASE_ADDRESS = 'http://3.7.155.186:8092/vpark/api';
 
+
+//SignUp 
+
+async function Signup (mobileNo) {
+
+  try {
+    const url = BASE_ADDRESS + '/users/v1/userMobileReg/' + mobileNo;
+    let responce = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### Signup url:" + url);
+    console.log("#### Signup :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - Signup : ' + error);
+    throw error;
+  }
+}
+
+//Verifiy OTP
+async function VerifyOTP (mobileNo,otp) {
+
+  try {
+    const url = BASE_ADDRESS + '/users/v1/verifyOTP/' + mobileNo+"/"+otp;
+    let responce = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### Signup url:" + url);
+    console.log("#### Signup :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - Signup : ' + error);
+    throw error;
+  }
+}
+
+//Create Profile
+async function CreateProfile (mobileNo,password,email,firstName,lastName,userType) {
+
+  const data={
+    mobileNo:mobileNo,
+    password:password,
+    userProfile:{
+      email:email,
+      firstName:firstName,
+      lastName:lastName
+    },
+    userType:userType
+  }
+
+  try {
+    const url = BASE_ADDRESS + '/users/v1';
+    let responce = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data),
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### CreateProfile url:" + url);
+    console.log("#### CreateProfile :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - CreateProfile : ' + error);
+    throw error;
+  }
+}
+
+//Login
+async function Login (userName,password) {
+
+  const data={
+    userName:userName,
+    password:password
+  }
+
+  try {
+    const url = BASE_ADDRESS + '/sessions/v1/authenticate';
+    let responce = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data),
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### Login url:" + url);
+    console.log("#### Login :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - Login : ' + error);
+    throw error;
+  }
+}
+
+//View Profile
+async function ViewProfile (Token) {
+
+  try {
+    const url = BASE_ADDRESS + '/users/v1/profile';
+    let responce = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### Signup url:" + url);
+    console.log("#### Signup :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - Signup : ' + error);
+    throw error;
+  }
+}
+
+//Update Profile
+async function UpdateProfile (Token,firstName,lastName,email) {
+  const data={
+    firstName:firstName,
+    lastName:lastName,
+    email:email,
+  }
+
+  try {
+    const url = BASE_ADDRESS + '/users/v1/profile';
+    let responce = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+      body: JSON.stringify(data),
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### Signup url:" + url);
+    console.log("#### Signup :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - Signup : ' + error);
+    throw error;
+  }
+}
+
+//GetVehicleTypeList
+async function getVehicleTypeList (Token) {
+
+  try {
+    const url = BASE_ADDRESS + '/vehicles/v1/type';
+    let responce = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+      body: JSON.stringify(data),
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### getVehicleTypeList url:" + url);
+    console.log("#### getVehicleTypeList :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - getVehicleTypeList : ' + error);
+    throw error;
+  }
+}
+
+//Create New Vehicle
+
+async function createNewVehicle_New (Token,vehicleNo,vehicleTypeId,isDefault) {
+
+  const data={
+    vehicleNo:vehicleNo,
+    vehicleTypeId:vehicleTypeId,
+    isDefault:isDefault
+  }
+
+  try {
+    const url = BASE_ADDRESS + '/vehicles/v1';
+    let responce = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+      body: JSON.stringify(data),
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### createNewVehicle_New url:" + url);
+    console.log("#### createNewVehicle_New :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - createNewVehicle_New : ' + error);
+    throw error;
+  }
+}
+
+//Update Vehicle
+
+async function updateVehicle (Token,vehicleNo,vehicleTypeId,vehicleType,isDefault) {
+
+  const data={
+    vehicleNo:vehicleNo,
+    vehicleTypeId:vehicleTypeId,
+    isDefault:isDefault
+  }
+
+  try {
+    const url = BASE_ADDRESS + '/vehicles/v1/update';
+    let responce = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+      body: JSON.stringify(data),
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### updateVehicle url:" + url);
+    console.log("#### updateVehicle :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - updateVehicle : ' + error);
+    throw error;
+  }
+}
+
+//Get Vehicle Data
+
+async function getVehicleDetails (Token) {
+
+  try {
+    const url = BASE_ADDRESS + '/vehicles/v1';
+    let responce = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### updateVehicle url:" + url);
+    console.log("#### updateVehicle :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - updateVehicle : ' + error);
+    throw error;
+  }
+}
+
+//Delete Vehicle 
+async function deleteVehicle_new (Token,id) {
+
+  try {
+    const url = BASE_ADDRESS + '/vehicles/v1/'+id;
+    let responce = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### deleteVehicle url:" + url);
+    console.log("#### deleteVehicle :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - deleteVehicle : ' + error);
+    throw error;
+  }
+}
+
+//Search Park Location
+async function searchParkLocation (Token,lattitude,longitude,vehicleTypeId) {
+
+  const data={
+    lattitude:lattitude,
+    longitude:longitude,
+    vehicleTypeId:vehicleTypeId
+  }
+
+  try {
+    const url = BASE_ADDRESS + '/parking-locations/v1/findLocByCoordinates';
+    let responce = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+      body: JSON.stringify(data),
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### searchParkLocation url:" + url);
+    console.log("#### searchParkLocation :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - searchParkLocation : ' + error);
+    throw error;
+  }
+}
+
+//Show parking details
+async function showParkingDetails (Token,parkingId,vehicleId) {
+
+  try {
+    const url = BASE_ADDRESS + '/booking/v1/parkingInfo/'+parkingId+"/"+vehicleId;
+    let responce = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### searchParkLocation url:" + url);
+    console.log("#### searchParkLocation :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - searchParkLocation : ' + error);
+    throw error;
+  }
+}
+
+//Booking
+async function Booking (Token,BookingTime,totalHrs,bookingFees) {
+
+  const data={
+    BookingTime:BookingTime,
+    totalHrs:totalHrs,
+    bookingFees:bookingFees
+  }
+
+  try {
+    const url = BASE_ADDRESS + '/parking-locations/v1/findLocByCoordinates';
+    let responce = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+      body: JSON.stringify(data),
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### searchParkLocation url:" + url);
+    console.log("#### searchParkLocation :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - searchParkLocation : ' + error);
+    throw error;
+  }
+}
+
+
+//.................Old APIs....................//
+
 //Login - Controller
 
 async function authonticate(username, password) {
@@ -30,6 +451,7 @@ async function authonticate(username, password) {
     throw error;
   }
 }
+
 
 //user - Controller
 
@@ -265,7 +687,7 @@ async function findVehicleById(Token, id) {
   }
 }
 
-async function updateVehicle(Token, id, vehicleNo, vehicleType) {
+async function updateVehicle_new(Token, id, vehicleNo, vehicleType) {
   const data = {
     id: id,
     vehicleNo: vehicleNo,
@@ -903,4 +1325,22 @@ export { updateParkReview };
 export { deleteParkReview };
 export { findAllLocationDetails };
 export { patchParkingDetail };
+
+// New API
+export { Signup };
+export { VerifyOTP };
+export { CreateProfile };
+export { Login };
+export {ViewProfile};
+export {UpdateProfile};
+export {getVehicleTypeList};
+export {createNewVehicle_New};
+export {getVehicleDetails};
+export {searchParkLocation};
+export {deleteVehicle_new};
+export {updateVehicle_new};
+export {showParkingDetails};
+export {Booking};
+
+
 

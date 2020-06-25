@@ -5,7 +5,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import ActionSheet from 'react-native-actionsheet';
 import ExStyles from '../Utility/Styles';
 import { Actions } from 'react-native-router-flux';
-import { createNewUser, findUserProfile,updateUser } from '../Netowrks/server';
+import { createNewUser, findUserProfile,updateUser,CreateProfile } from '../Netowrks/server';
 import { removeValue, getData } from '../AsyncStorage/AsyncStorage';
 
 const windowWidth = Dimensions.get('window').width;
@@ -37,10 +37,12 @@ export default class Profile extends React.Component {
             } else {
                 this.setState({
                     status: 0
+                },()=>{
+                    this.getUserdetails();
                 });
             }
         });
-        this.getUserdetails();
+        
     }
 
     registerFunction = () => {
@@ -60,7 +62,7 @@ export default class Profile extends React.Component {
             var status = 'ACTIVE';
             var userType = 'ADMIN';
           
-            createNewUser(this.state.mobile_number, this.state.first_name, this.state.last_name, this.state.email, this.state.city, this.state.password, status, userType).then((data) => {
+            CreateProfile(this.state.mobile_number, this.state.password, this.state.email, this.state.first_name, this.state.last_name, userType).then((data) => {
                 alert(JSON.stringify(data));
                 Actions.push('login2');
 

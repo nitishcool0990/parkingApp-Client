@@ -25,7 +25,7 @@ export default class Login2 extends React.Component {
         authonticate(this.state.username, this.state.password)
             .then(values => {
                 console.log('#### authonticate :' + JSON.stringify(values));
-                if (values.status == 1) {
+                if (values.status == 3) {
                     if (values.data != undefined) {
                         this.setState({
                             dataArray: values.data

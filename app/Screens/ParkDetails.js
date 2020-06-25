@@ -67,7 +67,7 @@ export default class ParkDetails extends React.Component {
                     }}>
                         <Text>Book your park</Text>
                         <View style={{ flexDirection: 'row' }}>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={()=>{alert('add favourite')}}>
                             <FontAwesome name={'heart'} size={20} style={{ padding: 5 }} />
                             </TouchableOpacity>
                             <TouchableOpacity onPress={()=>{Actions.push('addreview')}}>
@@ -93,7 +93,9 @@ export default class ParkDetails extends React.Component {
                             padding:10,
                             borderBottomRightRadius:15,
                             margin:1
-                             }}>
+                             }}
+                             onPress={()=>{alert('Booking now')}}
+                             >
                             <Text style={{color:'white'}}>Book Now</Text>
                         </TouchableOpacity>
                     </View>

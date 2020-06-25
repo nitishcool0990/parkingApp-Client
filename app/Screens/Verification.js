@@ -1,12 +1,40 @@
 import * as React from 'react';
-import { View, StyleSheet, Dimensions, Image, SafeAreaView, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Dimensions, Image, SafeAreaView, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import ExStyles from '../Utility/Styles';
 import { Actions } from 'react-native-router-flux';
+import { VerifyOTP } from '../Netowrks/server';
 
 export default class Verification extends React.Component {
     state = {
         verify_no: ''
     };
+
+    VerifyOTPFunction = () => {
+        if (this.props.mobile_number == undefined) {
+            Alert.alert(
+                'Enter mobile number',
+                '',
+                [
+                    { text: 'OK', onPress: () => { Actions.replace('register') } }
+                ],
+                { cancelable: false }
+            );
+        } else if (this.state.verify_no == '') {
+            alert('Enter verification number');
+        } else {
+            console.warn(this.props.mobile_number + " " + this.state.verify_no);
+            VerifyOTP(this.props.mobile_number, this.state.verify_no).then((values) => {
+                if (values.status == 1) {
+                    Actions.replace('profile');
+                }else{
+                    alert('Verification fail, Try again.');
+                }
+                console.warn(values);
+            }).catch((error) => {
+                alert(error);
+            });
+        }
+    }
 
     render() {
         return (
@@ -50,7 +78,7 @@ export default class Verification extends React.Component {
                                 borderRadius: 5,
                                 marginVertical: 5,
                                 marginHorizontal: 30,
-                                textAlign:'center'
+                                textAlign: 'center'
                             }}
                             placeholder={'Enter verify No'}
                             onChangeText={(value) => {
@@ -68,9 +96,9 @@ export default class Verification extends React.Component {
                                 borderRadius: 5,
                                 marginTop: 15
                             }}
-                            onPress={() => { Actions.profile() }}
+                            onPress={() => { this.VerifyOTPFunction() }}
                         >
-                            <Text style={{ color: 'white',textAlign:'center',fontSize:20 }}>VERIFY</Text>
+                            <Text style={{ color: 'white', textAlign: 'center', fontSize: 20 }}>VERIFY</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -81,7 +109,7 @@ export default class Verification extends React.Component {
                                 borderRadius: 5,
                                 marginTop: 15
                             }}>
-                            <Text style={{ alignSelf:'center',fontSize:20}}>RESEND OTP</Text>
+                            <Text style={{ alignSelf: 'center', fontSize: 20 }}>RESEND OTP</Text>
                         </TouchableOpacity>
 
 

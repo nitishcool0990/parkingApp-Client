@@ -37,12 +37,18 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>$(PRODUCT_NAME) requires access to your camera for the purpose of attaching photos of registering user</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>To view car park near to user</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>To view car park near to user</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>To view car park near to user</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>$(PRODUCT_NAME) requires access to save photos to your device for the purpose of attaching photos of registering user</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>$(PRODUCT_NAME) requires access to your gallery for the purpose of attaching existing photos of registering user</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

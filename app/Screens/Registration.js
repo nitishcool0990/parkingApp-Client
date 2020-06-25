@@ -3,6 +3,7 @@ import { SafeAreaView, View, StyleSheet, Text, TextInput, TouchableOpacity, Imag
 import ActionSheet from 'react-native-actionsheet';
 import { Actions } from 'react-native-router-flux';
 import ExStyles from '../Utility/Styles';
+import { Signup } from '../Netowrks/server';
 
 export default class Registration extends React.Component {
 
@@ -14,6 +15,22 @@ export default class Registration extends React.Component {
 
     showActionSheet = () => {
         this.ActionSheet.show()
+    }
+
+    SignupFunction = () => {
+        if (this.state.mobile_number == '') {
+            alert('Enter mobile number');
+        } else {
+            Signup(this.state.mobile_number).then((values) => {
+                if (values.status == 1) {
+                    Actions.replace('verification',{'mobile_number':this.state.mobile_number});
+                }else{
+                    alert(values.message);
+                }
+            }).catch((error) => {
+                alert(error);
+            });
+        }
     }
 
     render = () => {
@@ -53,7 +70,7 @@ export default class Registration extends React.Component {
                                 style={{
                                     fontSize: 22,
                                     borderWidth: 1,
-                                   padding: 10
+                                    padding: 10
                                 }}
                             >{this.state.country_code}</Text>
                             <ActionSheet
@@ -100,29 +117,29 @@ export default class Registration extends React.Component {
                             marginTop: 15,
                         }}
                         onPress={() => {
-                            Actions.verification();
+                            this.SignupFunction();
                         }}
                     >
-                        <Text style={{ color: 'white',fontSize:20 }}>SEND MY OTP</Text>
+                        <Text style={{ color: 'white', fontSize: 20 }}>SEND MY OTP</Text>
                     </TouchableOpacity>
 
-                    <View style={{ 
-                        marginHorizontal: 15, 
-                        padding: 5, 
+                    <View style={{
+                        marginHorizontal: 15,
+                        padding: 5,
                         marginTop: 10,
-                        alignItems:'center'
-                         }}>
-                        <Text style={{fontSize:16}}>By Proceeding i agree to Vpark</Text>
-                        <View style={{flexDirection:'row',marginTop:10}}>
+                        alignItems: 'center'
+                    }}>
+                        <Text style={{ fontSize: 16 }}>By Proceeding i agree to Vpark</Text>
+                        <View style={{ flexDirection: 'row', marginTop: 10 }}>
                             <TouchableOpacity>
-                        <Text style={{fontWeight:'bold',fontSize:16}}>Terms & Conditions</Text>
+                                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Terms & Conditions</Text>
                             </TouchableOpacity>
-                        <Text style={{fontSize:16}}> and </Text>    
+                            <Text style={{ fontSize: 16 }}> and </Text>
                             <TouchableOpacity>
-                        <Text style={{fontWeight:'bold',fontSize:16}}>Privacy Policy</Text>
+                                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Privacy Policy</Text>
                             </TouchableOpacity>
                         </View>
-                        
+
                     </View>
 
                 </View>

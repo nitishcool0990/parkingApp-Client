@@ -34,3 +34,24 @@
     "message": "User Found",
     "status": 1
 }
+
+{
+    "status": 1,
+    "data": [
+        {
+            "id": 1,
+            "createdDate": "2020-06-08T04:51:35",
+            "modifiedDate": "2020-06-08T04:51:35",
+            "parkName": "Nova Tech Zone (Pvt) Ltd",
+            "parkAddress": "NO 221, High Level Road, Wattegedara Rd, Maharagama 10230",
+            "parkRegion": "Maharagama",
+            "latitude": "6.8514958",
+            "longitude": "79.9193865",
+            "openTime": null,
+            "closeTime": null,
+            "status": "ACTIVE",
+            "parkingTypeId": null
+        }
+    ],
+    "message": "Location search success"
+}
