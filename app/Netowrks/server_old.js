@@ -1,6 +1,7 @@
 
 const BASE_ADDRESS = 'http://3.7.155.186:8092/vpark/api';
 
+
 //SignUp 
 
 async function Signup(mobileNo) {
@@ -231,7 +232,6 @@ async function getVehicleTypeList(Token) {
 }
 
 //Create New Vehicle
-
 async function createNewVehicle_New(Token, vehicleNo, vehicleTypeId, isDefault) {
 
   const data = {
@@ -266,7 +266,6 @@ async function createNewVehicle_New(Token, vehicleNo, vehicleTypeId, isDefault) 
 }
 
 //Update Vehicle
-
 async function updateVehicle(Token, id, vehicleNo, vehicleTypeId, vehicleType, isDefault) {
 
   const data = {
@@ -303,7 +302,6 @@ async function updateVehicle(Token, id, vehicleNo, vehicleTypeId, vehicleType, i
 }
 
 //Get Vehicle Data
-
 async function getVehicleDetails(Token) {
 
   try {
@@ -390,7 +388,6 @@ async function searchParkLocation(Token, lattitude, longitude, vehicleTypeId) {
     throw error;
   }
 }
-
 
 async function searchParkLocationForm(Token, lattitude, longitude, vehicleTypeId) {
 
@@ -505,6 +502,8 @@ async function Booking(Token, BookingTime, totalHrs, bookingFees) {
   }
 }
 
+
+
 //Add Parking Location in System API
 async function AddParkingLocation(Token, images,) {
 
@@ -560,6 +559,8 @@ async function AddParkingLocation(Token, images,) {
   }
 }
 
+//Get All Parkings Location of Agent API
+
 
 
 
@@ -593,7 +594,75 @@ async function getAllParkingsLocationofAgent(Token) {
   }
 }
 
-async function addparkingLocationInSystem(Token, image, parkdata, then, error) {
+//Add Parking Location in System
+
+// async function addparkingLocationInSystem(Token, image, parkdata) {
+
+//   const formData = new FormData();
+
+//   //formData.append({ images }, image); //text data in key value pair form
+//   formData.append('parkingLoc',
+//     JSON.stringify({
+//       "parkName": "qqqq",
+//       "parkAddress": "dsfsfs",
+//       "latitude": "33.4927755554533",
+//       "longitude": "67.676085434566",
+//       "parkRegion": "qqqq",
+//       "openTime": "11:30",
+//       "closeTime": "23:00",
+//       "description": "Description Text",
+//       "parkingTypeId": 2,
+//       "parkingDetailsDtos": [
+//         {
+//           "vehicleTypeId": 3,
+//           "capacity": 20,
+//           "monthlyRate": 200,
+//           "nightCharges": 30,
+//           "chargesType": "PERHOUR",
+//           "parkingChargesDtos": [
+//             {
+//               "hours": 1,
+//               "charges": 20
+//             }
+//           ]
+//         },
+//         {
+//           "vehicleTypeId": 4,
+//           "capacity": 45,
+//           "monthlyRate": 500,
+//           "nightCharges": 40,
+//           "chargesType": "SLOTS",
+//           "parkingChargesDtos": [
+//             {
+//               "hours": 1,
+//               "charges": 50
+//             }
+//           ]
+//         }
+//       ]
+//     })
+//   ); //text data in key value pair form
+
+//   const serviceResponse = fetch(
+//     BASE_ADDRESS + '/agent/v1/create',
+//     {
+//       method: 'POST',
+//       headers: {
+//         'Accept': 'application/json',
+//         'Content-Type': 'multipart/form-data',
+//         'Authorization': "Bearer " + Token
+//       },
+//       body: JSON.stringify(formData),
+//     })
+//     .then((serviceResponse) => { return serviceResponse.json() })
+//     .catch((error) => console.warn(" addparkingLocationInSystem fetch error:", error))
+//     .then((serviceResponse) => {
+//       console.log(JSON.stringify(serviceResponse));
+//     });
+
+// }
+
+async function addparkingLocationInSystem(Token, image, parkdata) {
 
   var myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + Token);
@@ -609,12 +678,11 @@ async function addparkingLocationInSystem(Token, image, parkdata, then, error) {
     body: formdata,
     redirect: 'follow'
   };
-  alert(JSON.stringify(parkdata));
-  console.warn(JSON.stringify(parkdata));
-  fetch(BASE_ADDRESS + "/api/agent/v1/create", requestOptions)
+
+  fetch("http://3.7.155.186:8092/vpark/api/agent/v1/create", requestOptions)
     .then(response => response.text())
-    .then(then)
-    .catch(error);
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
 }
 
 // Update Parking Location 
@@ -642,10 +710,10 @@ async function updateParkingLocation(Token, image, parkdata) {
 }
 
 //Get All Parkings by Parking Location Id
-async function getParkingDetailsbyParkingLocationId(Token, location_id) {
+async function getParkingDetailsbyParkingLocationId(Token,location_id) {
 
   try {
-    const url = BASE_ADDRESS + '/agent/v1/details/' + location_id;
+    const url = BASE_ADDRESS + '/agent/v1/'+details+'/'+location_id;
     let responce = await fetch(url, {
       method: 'GET',
       headers: {
@@ -653,6 +721,7 @@ async function getParkingDetailsbyParkingLocationId(Token, location_id) {
         'Content-Type': 'application/json',
         'Authorization': "Bearer " + Token
       },
+      // body: JSON.stringify(data),
     });
     let responce_Values = await responce.text();
 
@@ -668,10 +737,10 @@ async function getParkingDetailsbyParkingLocationId(Token, location_id) {
 }
 
 //Delete Parking  By Parking Location Id  
-async function deleteParkingByParkingLocationId(Token, location_id) {
+async function deleteParkingByParkingLocationId(Token,location_id) {
 
   try {
-    const url = BASE_ADDRESS + '/agent/v1/delete/' + location_id;
+    const url = BASE_ADDRESS + '/agent/v1/delete/'+location_id;
     let responce = await fetch(url, {
       method: 'DELETE',
       headers: {
@@ -719,208 +788,9 @@ async function getAllParkingTypeList(Token) {
   }
 }
 
-//Get Parking Reviews By Location Id
-async function getparkingReviewsByLocationId(Token, location_id) {
+//.................Old APIs....................//
 
-  try {
-    const url = BASE_ADDRESS + '/parking-locations/v1/park-reviews/' + location_id;
-    let responce = await fetch(url, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': "Bearer " + Token
-      },
-    });
-    let responce_Values = await responce.text();
-
-    console.log("#### getparkingReviewsByLocationId url:" + url);
-    console.log("#### getparkingReviewsByLocationId :" + responce_Values);
-
-    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
-  } catch (error) {
-    //  alert('###: server error - getLogin : ' + JSONerror);
-    console.log('### :Network call error - getparkingReviewsByLocationId : ' + error);
-    throw error;
-  }
-}
-
-//Show All the Arrived Vehicle List 
-async function getAlltheArrivedVehicleList(Token, location_id) {
-
-  try {
-    const url = BASE_ADDRESS + '/agent/v1/ParkedVehicles/'+location_id;
-    let responce = await fetch(url, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': "Bearer " + Token
-      },
-    });
-    let responce_Values = await responce.text();
-
-    console.log("#### getAlltheArrivedVehicleList url:" + url);
-    console.log("#### getAlltheArrivedVehicleList :" + responce_Values);
-
-    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
-  } catch (error) {
-    //  alert('###: server error - getLogin : ' + JSONerror);
-    console.log('### :Network call error - getAlltheArrivedVehicleList : ' + error);
-    throw error;
-  }
-}
-
-//All the Upcoming Vehicle List
-async function getAlltheUpcomingVehicleList(Token,location_id) {
-
-  try {
-    const url = BASE_ADDRESS + '/agent/v1/upcomingVehicles/' + location_id;
-    let responce = await fetch(url, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': "Bearer " + Token
-      },
-    });
-    let responce_Values = await responce.text();
-
-    console.log("#### getAlltheUpcomingVehicleList url:" + url);
-    console.log("#### getAlltheUpcomingVehicleList :" + responce_Values);
-
-    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
-  } catch (error) {
-    //  alert('###: server error - getLogin : ' + JSONerror);
-    console.log('### :Network call error - getAlltheUpcomingVehicleList : ' + error);
-    throw error;
-  }
-}
-
-//Check In
-async function CheckIn(Token,bookingId, locationId, vehicleTypeId) {
-  const data = {
-    bookingId: bookingId,
-    locationId: locationId,
-    vehicleTypeId: vehicleTypeId
-  }
-
-  try {
-    const url = BASE_ADDRESS + '/agent/v1/checkIn';
-    let responce = await fetch(url, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': "Bearer " + Token
-      },
-      body: JSON.stringify(data),
-    });
-    let responce_Values = await responce.text();
-
-    console.log("#### CheckIn url:" + url);
-    console.log("#### CheckIn :" + responce_Values);
-
-    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
-  } catch (error) {
-    //  alert('###: server error - getLogin : ' + JSONerror);
-    console.log('### :Network call error - CheckIn : ' + error);
-    throw error;
-  }
-}
-
-//CheckOut
-async function CheckOut(Token,bookingId, locationId, vehicleTypeId) {
-  const data = {
-    bookingId: bookingId,
-    locationId: locationId,
-    vehicleTypeId: vehicleTypeId
-  }
-
-  try {
-    const url = BASE_ADDRESS + '/agent/v1/checkOut';
-    let responce = await fetch(url, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': "Bearer " + Token
-      },
-      body: JSON.stringify(data),
-    });
-    let responce_Values = await responce.text();
-
-    console.log("#### CheckOut url:" + url);
-    console.log("#### CheckOut :" + responce_Values);
-
-    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
-  } catch (error) {
-    //  alert('###: server error - getLogin : ' + JSONerror);
-    console.log('### :Network call error - CheckOut : ' + error);
-    throw error;
-  }
-}
-
-//Update Parking reviews By Review
-async function updateParkingreviewsByReview(Token,reviewId,rating,comment,parkingLocId,reply) {
-  const data = {
-    reviewId: reviewId,
-    rating: rating,
-    comment: comment,
-    parkingLocId:parkingLocId,
-    reply:reply
-  }
-
-  try {
-    const url = BASE_ADDRESS + '/parking-locations/v1/park-reviews/update';
-    let responce = await fetch(url, {
-      method: 'PATCH',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': "Bearer " + Token
-      },
-      body: JSON.stringify(data),
-    });
-    let responce_Values = await responce.text();
-
-    console.log("#### updateParkingreviewsByReview url:" + url);
-    console.log("#### updateParkingreviewsByReview data:" + JSON.stringify(data));
-    console.log("#### updateParkingreviewsByReview :" + responce_Values);
-
-    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
-  } catch (error) {
-    //  alert('###: server error - getLogin : ' + JSONerror);
-    console.log('### :Network call error - updateParkingreviewsByReview : ' + error);
-    throw error;
-  }
-}
-
-
-async function findUserById(Token, id) {
-
-  try {
-    const url = BASE_ADDRESS + '/users/v1/' + id;
-    let responce = await fetch(url, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': "Bearer " + Token
-      },
-    });
-    let responce_Values = await responce.text();
-
-    console.log("#### findUserById url:" + url);
-    console.log("#### findUserById :" + responce_Values);
-
-    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
-  } catch (error) {
-    //  alert('###: server error - getLogin : ' + JSONerror);
-    console.log('### :Network call error - findUserById : ' + error);
-    throw error;
-  }
-}
+//Login - Controller
 
 async function authonticate(username, password) {
   // const data = {
@@ -951,6 +821,164 @@ async function authonticate(username, password) {
   }
 }
 
+
+//user - Controller
+
+async function createNewUser(MobileNo, firstName, lastName, email, city, password, status, userType) {
+  const data = {
+    mobileNo: MobileNo,
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
+    city: city,
+    password: password,
+    status: status,
+    userType: userType,
+  };
+
+  try {
+    const url = BASE_ADDRESS + '/users/v1';
+    let responce = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    console.log("#### createNewUser :" + JSON.stringify(data));
+    console.log("#### createNewUser url :" + JSON.stringify(url));
+    let responce_Values = await responce.text();
+    console.log("#### createNewUser :" + responce_Values);
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - createNewUser : ' + error);
+    throw error;
+  }
+}
+
+async function findUserById(Token, id) {
+
+  try {
+    const url = BASE_ADDRESS + '/users/v1/' + id;
+    let responce = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### findUserById url:" + url);
+    console.log("#### findUserById :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - findUserById : ' + error);
+    throw error;
+  }
+}
+
+async function updateUser(Token, id, MobileNo, firstName, lastName, email, city, password, status, userType) {
+  const data = {
+    id: id,
+    MobileNo: MobileNo,
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
+    city: city,
+    password: password,
+    status: status,
+    userType: userType,
+  };
+
+  try {
+    const url = BASE_ADDRESS + '/users/v1/' + id;
+    let responce = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+      body: JSON.stringify(data),
+    });
+    let responce_Values = await responce.text();
+    if (responce_active) {
+      console.log("#### updateUser :" + responce_Values);
+    }
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - updateUser : ' + error);
+    throw error;
+  }
+}
+
+async function findUserProfile(Token, id) {
+
+  try {
+    const url = BASE_ADDRESS + '/users/v1/' + id + '/profile';
+    let responce = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### findUserProfile data:" + url);
+    console.log("#### findUserProfile :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - findUserProfile : ' + error);
+    throw error;
+  }
+}
+
+async function updateUserProfile(Token, id, firstName, lastName, email, city) {
+  const data = {
+    id: id,
+    MobileNo: MobileNo,
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
+    city: city,
+  };
+
+  try {
+    const url = BASE_ADDRESS + '/users/v1/' + id + '/profile';
+    let responce = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+      body: JSON.stringify(data),
+    });
+    let responce_Values = await responce.text();
+    if (responce_active) {
+      console.log("#### updateUserProfile :" + responce_Values);
+    }
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - updateUserProfile : ' + error);
+    throw error;
+  }
+}
+
+//vehicle - Controller
+
 async function findAllVehicles(Token, user, vehicleNo, vehicleType) {
   try {
     const url = BASE_ADDRESS + '/vehicles/v1?user=' + user + '&vehicleType=' + vehicleType + '&vehicleNo=' + vehicleNo;
@@ -975,10 +1003,697 @@ async function findAllVehicles(Token, user, vehicleNo, vehicleType) {
   }
 }
 
+async function createNewVehicle(Token, id, vehicleNo, vehicleType) {
+  const data = {
+    id: id,
+    vehicleNo: vehicleNo,
+    vehicleType: vehicleType,
+    Token: Token
+  };
+  try {
+    const url = BASE_ADDRESS + '/vehicles/v1';
+    let responce = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+      body: JSON.stringify(data),
+    });
+    let responce_Values = await responce.text();
+    console.log("#### createNewVehicle data :" + JSON.stringify(data));
+    console.log("#### createNewVehicle :" + responce_Values);
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - createNewVehicle : ' + error);
+    throw error;
+  }
+}
 
-export { findUserById };
+async function findVehicleById(Token, id) {
+
+  try {
+    const url = BASE_ADDRESS + '/vehicles/v1/' + id;
+    let responce = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+    });
+    let responce_Values = await responce.text();
+    if (responce_active) {
+      console.log("#### findVehicleById :" + responce_Values);
+    }
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - findVehicleById : ' + error);
+    throw error;
+  }
+}
+
+async function updateVehicle_new(Token, id, vehicleNo, vehicleType) {
+  const data = {
+    id: id,
+    vehicleNo: vehicleNo,
+    vehicleType: vehicleType,
+  };
+  try {
+    const url = BASE_ADDRESS + '/vehicles/v1/' + id;
+    let responce = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+      body: JSON.stringify(data),
+    });
+    let responce_Values = await responce.text();
+    if (responce_active) {
+      console.log("#### updateVehicle :" + responce_Values);
+    }
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - updateVehicle : ' + error);
+    throw error;
+  }
+}
+
+async function deleteVehicle(Token, id) {
+
+  try {
+    const url = BASE_ADDRESS + '/vehicles/v1/' + id;
+    let responce = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+    });
+    let responce_Values = await responce.text();
+    if (responce_active) {
+      console.log("#### deleteVehicle :" + responce_Values);
+    }
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - deleteVehicle : ' + error);
+    throw error;
+  }
+}
+
+//parking-location-controller
+
+// GET
+async function findAllLocations(Token, parkRegion) {
+  try {
+    const url = BASE_ADDRESS + '/parking-locations/v1?' + "parkRegion=" + parkRegion;
+    let responce = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### findAllLocations :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - findAllLocations : ' + error);
+    throw error;
+  }
+}
+// POST
+async function createNewLocation(Token, id, latitude, longitude, parkAddress, parkName, parkRegion) {
+
+  const data = {
+    "id": id,
+    "latitude": latitude,
+    "longitude": longitude,
+    "parkAddress": parkAddress,
+    "parkName": parkName,
+    "parkRegion": parkRegion,
+    "parkingDetails": [
+      {
+        "closeTime": "2020-06-07T05:55:04.626Z",
+        "createdDate": "2020-06-07T05:55:04.626Z",
+        "hourlyRate": 0,
+        "id": 0,
+        "modifiedDate": "2020-06-07T05:55:04.626Z",
+        "monthlyRate": 0,
+        "openTime": "2020-06-07T05:55:04.626Z",
+        "status": "ACTIVE",
+        "vehicleType": "BIKE"
+      }
+    ],
+    "parkingReviews": [
+      {
+        "comment": "string",
+        "createdDate": "2020-06-07T05:55:04.626Z",
+        "id": 0,
+        "modifiedDate": "2020-06-07T05:55:04.626Z",
+        "rating": 0,
+        "userId": 0
+      }
+    ],
+    "status": "ACTIVE"
+  }
+
+  try {
+    const url = BASE_ADDRESS + '/parking-locations/v1';
+    let responce = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+      body: JSON.stringify(data),
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### createNewLocation :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - createNewLocation : ' + error);
+    throw error;
+  }
+}
+
+async function findLocationById(Token, id) {
+
+  const data = {
+    "createdDate": "2020-06-07T05:55:04.626Z",
+    "id": 0,
+    "latitude": "string",
+    "longitude": "string",
+    "modifiedDate": "2020-06-07T05:55:04.626Z",
+    "parkAddress": "string",
+    "parkName": "string",
+    "parkRegion": "string",
+    "parkingDetails": [
+      {
+        "closeTime": "2020-06-07T05:55:04.626Z",
+        "createdDate": "2020-06-07T05:55:04.626Z",
+        "hourlyRate": 0,
+        "id": 0,
+        "modifiedDate": "2020-06-07T05:55:04.626Z",
+        "monthlyRate": 0,
+        "openTime": "2020-06-07T05:55:04.626Z",
+        "status": "ACTIVE",
+        "vehicleType": "BIKE"
+      }
+    ],
+    "parkingReviews": [
+      {
+        "comment": "string",
+        "createdDate": "2020-06-07T05:55:04.626Z",
+        "id": 0,
+        "modifiedDate": "2020-06-07T05:55:04.626Z",
+        "rating": 0,
+        "userId": 0
+      }
+    ],
+    "status": "ACTIVE"
+  }
+
+  try {
+    const url = BASE_ADDRESS + '/parking-locations/v1';
+    let responce = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+      body: JSON.stringify(data),
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### findAllLocations :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - findAllLocations : ' + error);
+    throw error;
+  }
+}
+
+async function updateLocation(Token, id) {
+
+  const data = {
+    "createdDate": "2020-06-07T05:55:04.626Z",
+    "id": 0,
+    "latitude": "string",
+    "longitude": "string",
+    "modifiedDate": "2020-06-07T05:55:04.626Z",
+    "parkAddress": "string",
+    "parkName": "string",
+    "parkRegion": "string",
+    "parkingDetails": [
+      {
+        "closeTime": "2020-06-07T05:55:04.626Z",
+        "createdDate": "2020-06-07T05:55:04.626Z",
+        "hourlyRate": 0,
+        "id": 0,
+        "modifiedDate": "2020-06-07T05:55:04.626Z",
+        "monthlyRate": 0,
+        "openTime": "2020-06-07T05:55:04.626Z",
+        "status": "ACTIVE",
+        "vehicleType": "BIKE"
+      }
+    ],
+    "parkingReviews": [
+      {
+        "comment": "string",
+        "createdDate": "2020-06-07T05:55:04.626Z",
+        "id": 0,
+        "modifiedDate": "2020-06-07T05:55:04.626Z",
+        "rating": 0,
+        "userId": 0
+      }
+    ],
+    "status": "ACTIVE"
+  }
+
+  try {
+    const url = BASE_ADDRESS + '/parking-locations/v1';
+    let responce = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+      body: JSON.stringify(data),
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### findAllLocations :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - findAllLocations : ' + error);
+    throw error;
+  }
+}
+
+async function deleteLocation(Token, id) {
+
+  const data = {
+    "createdDate": "2020-06-07T05:55:04.626Z",
+    "id": 0,
+    "latitude": "string",
+    "longitude": "string",
+    "modifiedDate": "2020-06-07T05:55:04.626Z",
+    "parkAddress": "string",
+    "parkName": "string",
+    "parkRegion": "string",
+    "parkingDetails": [
+      {
+        "closeTime": "2020-06-07T05:55:04.626Z",
+        "createdDate": "2020-06-07T05:55:04.626Z",
+        "hourlyRate": 0,
+        "id": 0,
+        "modifiedDate": "2020-06-07T05:55:04.626Z",
+        "monthlyRate": 0,
+        "openTime": "2020-06-07T05:55:04.626Z",
+        "status": "ACTIVE",
+        "vehicleType": "BIKE"
+      }
+    ],
+    "parkingReviews": [
+      {
+        "comment": "string",
+        "createdDate": "2020-06-07T05:55:04.626Z",
+        "id": 0,
+        "modifiedDate": "2020-06-07T05:55:04.626Z",
+        "rating": 0,
+        "userId": 0
+      }
+    ],
+    "status": "ACTIVE"
+  }
+
+  try {
+    const url = BASE_ADDRESS + '/parking-locations/v1';
+    let responce = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+      body: JSON.stringify(data),
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### findAllLocations :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - findAllLocations : ' + error);
+    throw error;
+  }
+}
+
+async function findAllReviews(Token, id) {
+
+  const data = {
+    "createdDate": "2020-06-07T05:55:04.626Z",
+    "id": 0,
+    "latitude": "string",
+    "longitude": "string",
+    "modifiedDate": "2020-06-07T05:55:04.626Z",
+    "parkAddress": "string",
+    "parkName": "string",
+    "parkRegion": "string",
+    "parkingDetails": [
+      {
+        "closeTime": "2020-06-07T05:55:04.626Z",
+        "createdDate": "2020-06-07T05:55:04.626Z",
+        "hourlyRate": 0,
+        "id": 0,
+        "modifiedDate": "2020-06-07T05:55:04.626Z",
+        "monthlyRate": 0,
+        "openTime": "2020-06-07T05:55:04.626Z",
+        "status": "ACTIVE",
+        "vehicleType": "BIKE"
+      }
+    ],
+    "parkingReviews": [
+      {
+        "comment": "string",
+        "createdDate": "2020-06-07T05:55:04.626Z",
+        "id": 0,
+        "modifiedDate": "2020-06-07T05:55:04.626Z",
+        "rating": 0,
+        "userId": 0
+      }
+    ],
+    "status": "ACTIVE"
+  }
+
+  try {
+    const url = BASE_ADDRESS + '/parking-locations/v1';
+    let responce = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+      body: JSON.stringify(data),
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### findAllLocations :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - findAllLocations : ' + error);
+    throw error;
+  }
+}
+
+async function updateParkReview(Token, id) {
+
+  const data = {
+    "createdDate": "2020-06-07T05:55:04.626Z",
+    "id": 0,
+    "latitude": "string",
+    "longitude": "string",
+    "modifiedDate": "2020-06-07T05:55:04.626Z",
+    "parkAddress": "string",
+    "parkName": "string",
+    "parkRegion": "string",
+    "parkingDetails": [
+      {
+        "closeTime": "2020-06-07T05:55:04.626Z",
+        "createdDate": "2020-06-07T05:55:04.626Z",
+        "hourlyRate": 0,
+        "id": 0,
+        "modifiedDate": "2020-06-07T05:55:04.626Z",
+        "monthlyRate": 0,
+        "openTime": "2020-06-07T05:55:04.626Z",
+        "status": "ACTIVE",
+        "vehicleType": "BIKE"
+      }
+    ],
+    "parkingReviews": [
+      {
+        "comment": "string",
+        "createdDate": "2020-06-07T05:55:04.626Z",
+        "id": 0,
+        "modifiedDate": "2020-06-07T05:55:04.626Z",
+        "rating": 0,
+        "userId": 0
+      }
+    ],
+    "status": "ACTIVE"
+  }
+
+  try {
+    const url = BASE_ADDRESS + '/parking-locations/v1';
+    let responce = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+      body: JSON.stringify(data),
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### findAllLocations :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - findAllLocations : ' + error);
+    throw error;
+  }
+}
+
+async function deleteParkReview(Token, id) {
+
+  const data = {
+    "createdDate": "2020-06-07T05:55:04.626Z",
+    "id": 0,
+    "latitude": "string",
+    "longitude": "string",
+    "modifiedDate": "2020-06-07T05:55:04.626Z",
+    "parkAddress": "string",
+    "parkName": "string",
+    "parkRegion": "string",
+    "parkingDetails": [
+      {
+        "closeTime": "2020-06-07T05:55:04.626Z",
+        "createdDate": "2020-06-07T05:55:04.626Z",
+        "hourlyRate": 0,
+        "id": 0,
+        "modifiedDate": "2020-06-07T05:55:04.626Z",
+        "monthlyRate": 0,
+        "openTime": "2020-06-07T05:55:04.626Z",
+        "status": "ACTIVE",
+        "vehicleType": "BIKE"
+      }
+    ],
+    "parkingReviews": [
+      {
+        "comment": "string",
+        "createdDate": "2020-06-07T05:55:04.626Z",
+        "id": 0,
+        "modifiedDate": "2020-06-07T05:55:04.626Z",
+        "rating": 0,
+        "userId": 0
+      }
+    ],
+    "status": "ACTIVE"
+  }
+
+  try {
+    const url = BASE_ADDRESS + '/parking-locations/v1';
+    let responce = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+      body: JSON.stringify(data),
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### findAllLocations :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - findAllLocations : ' + error);
+    throw error;
+  }
+}
+
+async function findAllLocationDetails(Token, id) {
+
+  const data = {
+    "createdDate": "2020-06-07T05:55:04.626Z",
+    "id": 0,
+    "latitude": "string",
+    "longitude": "string",
+    "modifiedDate": "2020-06-07T05:55:04.626Z",
+    "parkAddress": "string",
+    "parkName": "string",
+    "parkRegion": "string",
+    "parkingDetails": [
+      {
+        "closeTime": "2020-06-07T05:55:04.626Z",
+        "createdDate": "2020-06-07T05:55:04.626Z",
+        "hourlyRate": 0,
+        "id": 0,
+        "modifiedDate": "2020-06-07T05:55:04.626Z",
+        "monthlyRate": 0,
+        "openTime": "2020-06-07T05:55:04.626Z",
+        "status": "ACTIVE",
+        "vehicleType": "BIKE"
+      }
+    ],
+    "parkingReviews": [
+      {
+        "comment": "string",
+        "createdDate": "2020-06-07T05:55:04.626Z",
+        "id": 0,
+        "modifiedDate": "2020-06-07T05:55:04.626Z",
+        "rating": 0,
+        "userId": 0
+      }
+    ],
+    "status": "ACTIVE"
+  }
+
+  try {
+    const url = BASE_ADDRESS + '/parking-locations/v1';
+    let responce = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+      body: JSON.stringify(data),
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### findAllLocations :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - findAllLocations : ' + error);
+    throw error;
+  }
+}
+
+async function patchParkingDetail(Token, id) {
+
+  const data = {
+    "createdDate": "2020-06-07T05:55:04.626Z",
+    "id": 0,
+    "latitude": "string",
+    "longitude": "string",
+    "modifiedDate": "2020-06-07T05:55:04.626Z",
+    "parkAddress": "string",
+    "parkName": "string",
+    "parkRegion": "string",
+    "parkingDetails": [
+      {
+        "closeTime": "2020-06-07T05:55:04.626Z",
+        "createdDate": "2020-06-07T05:55:04.626Z",
+        "hourlyRate": 0,
+        "id": 0,
+        "modifiedDate": "2020-06-07T05:55:04.626Z",
+        "monthlyRate": 0,
+        "openTime": "2020-06-07T05:55:04.626Z",
+        "status": "ACTIVE",
+        "vehicleType": "BIKE"
+      }
+    ],
+    "parkingReviews": [
+      {
+        "comment": "string",
+        "createdDate": "2020-06-07T05:55:04.626Z",
+        "id": 0,
+        "modifiedDate": "2020-06-07T05:55:04.626Z",
+        "rating": 0,
+        "userId": 0
+      }
+    ],
+    "status": "ACTIVE"
+  }
+
+  try {
+    const url = BASE_ADDRESS + '/parking-locations/v1';
+    let responce = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + Token
+      },
+      body: JSON.stringify(data),
+    });
+    let responce_Values = await responce.text();
+
+    console.log("#### findAllLocations :" + responce_Values);
+
+    return JSON.parse(responce_Values); // this .data is array name of jason pass from the server side
+  } catch (error) {
+    //  alert('###: server error - getLogin : ' + JSONerror);
+    console.log('### :Network call error - findAllLocations : ' + error);
+    throw error;
+  }
+}
+
 export { authonticate };
-export { findAllVehicles }
+export { createNewUser };
+export { findUserById };
+export { updateUser };
+export { findUserProfile };
+export { updateUserProfile };
+export { findAllVehicles };
+export { createNewVehicle };
+export { findVehicleById };
+export { updateVehicle };
+export { deleteVehicle };
+export { findAllLocations };
+export { createNewLocation };
+export { findLocationById };
+export { updateLocation };
+export { deleteLocation };
+export { findAllReviews };
+export { updateParkReview };
+export { deleteParkReview };
+export { findAllLocationDetails };
+export { patchParkingDetail };
 
 // New API
 export { Signup };
@@ -992,8 +1707,8 @@ export { getVehicleTypeList };
 export { createNewVehicle_New };
 export { getVehicleDetails };
 export { searchParkLocation };
-export { updateVehicle };
 export { deleteVehicle_new };
+export { updateVehicle_new };
 export { showParkingDetails };
 export { Booking };
 export { AddParkingLocation };
@@ -1005,11 +1720,4 @@ export { addparkingLocationInSystem };
 export { updateParkingLocation };
 export { getParkingDetailsbyParkingLocationId };
 export { getAllParkingTypeList };
-export { deleteParkingByParkingLocationId };
-export { getparkingReviewsByLocationId };
-export { getAlltheUpcomingVehicleList };
-export { getAlltheArrivedVehicleList };
-export { CheckIn};
-export { CheckOut};
-export {updateParkingreviewsByReview};
 

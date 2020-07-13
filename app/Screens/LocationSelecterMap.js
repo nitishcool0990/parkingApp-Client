@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TextInput, TouchableOpacity, Text,SafeAreaView,StyleSheet,Dimensions } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, SafeAreaView, StyleSheet, Dimensions } from 'react-native';
 import MapView, { Marker, Coordinate } from 'react-native-maps';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
@@ -21,19 +21,19 @@ export default class LocationSelecterMap extends React.Component {
     render = () => {
         return (
             <SafeAreaView style={styles.safe}>
-            <View style={styles.headerbar}>
-                <TouchableOpacity onPress={() => { Actions.pop() }}>
-                    <FontAwesome name={'chevron-left'} size={20} color={'black'} />
-                </TouchableOpacity>
-            </View>
+                <View style={styles.headerbar}>
+                    <TouchableOpacity onPress={() => { Actions.pop() }}>
+                        <FontAwesome name={'chevron-left'} size={20} color={'black'} />
+                    </TouchableOpacity>
+                </View>
 
-            <View style={{ flex: 1 }}>
-                <MapView
-                    style={{ flex: 1 }}
-                    region={this.state.region}
-                //  onRegionChange={this.onRegionChange}
-                >
-                    {/* <Marker
+                <View style={{ flex: 1 }}>
+                    <MapView
+                        style={{ flex: 1 }}
+                        region={this.state.region}
+                    //  onRegionChange={this.onRegionChange}
+                    >
+                        {/* <Marker
                         draggable
                         coordinate={{
                             latitude: this.state.latitude,
@@ -48,9 +48,9 @@ export default class LocationSelecterMap extends React.Component {
                         }}
                     /> */}
 
-                </MapView>
+                    </MapView>
 
-                {/* <View style={{
+                    {/* <View style={{
                     backgroundColor: "white",
                     position: 'absolute',
                     top: 100,
@@ -83,88 +83,87 @@ export default class LocationSelecterMap extends React.Component {
                     </TouchableOpacity>
                 </View> */}
 
-                <View style={{
-                    backgroundColor: "white",
-                    position: 'absolute',
-                    top: 100,
-                    left: 0,
-                    right: 0,
-                    elevation: 3,
-                    marginHorizontal: 20,
-                    borderRadius: 5,
-                    flexDirection: 'row',
-                    alignItems: 'center'
-                }}>
-                    <GooglePlacesAutocomplete
-                        placeholder='Search'
-                       // minLength={2} // minimum length of text to search
-                        //autoFocus={false}
-                      fetchDetails={true}
-                      listViewDisplayed='auto'
-                      keyboardShouldPersistTaps={'always'}
-                        onPress={(data, details = null) => {
-                            // 'details' is provided when fetchDetails = true
-                            //console.log(data, details);
-                            console.warn("1 " + JSON.stringify(data))
-                            console.warn("2 " + JSON.stringify(details.geometry.location))
+                    <View style={{
+                        backgroundColor: "white",
+                        position: 'absolute',
+                        top: 100,
+                        left: 0,
+                        right: 0,
+                        elevation: 3,
+                        marginHorizontal: 20,
+                        borderRadius: 5,
+                        flexDirection: 'row',
+                        alignItems: 'center'
+                    }}>
+                        <GooglePlacesAutocomplete
+                            placeholder='Search'
+                            // minLength={2} // minimum length of text to search
+                            //autoFocus={false}
+                            fetchDetails={true}
+                            listViewDisplayed='auto'
+                            keyboardShouldPersistTaps={'always'}
+                            onPress={(data, details = null) => {
+                                // 'details' is provided when fetchDetails = true
+                                //console.log(data, details);
+                                console.warn("1 " + JSON.stringify(data))
+                                console.warn("2 " + JSON.stringify(details.geometry.location))
 
-                            var location = {
-                                latitude: details.geometry.location.lat,
-                                longitude: details.geometry.location.lng,
-                                latitudeDelta: 0.0922,
-                                longitudeDelta: 0.0421,
-                            }
+                                var location = {
+                                    latitude: details.geometry.location.lat,
+                                    longitude: details.geometry.location.lng,
+                                    latitudeDelta: 0.0922,
+                                    longitudeDelta: 0.0421,
+                                }
 
-                            this.setState({
-                                region: location,
-                                latitude: details.geometry.location.lat,
-                                longitude: details.geometry.location.lng
-                            });
-                        }}
-                        query={{
-                            //key: 'AIzaSyAWp18BCsNSms_EfJ2CvGFKUkpzGD_quic',
-                            key:'AIzaSyCoVYEA30GHIpDRKo-2jTnYGH0F5dLK7hw',
-                            language: 'en',
-                             types: 'geocode'
-                        }}
-                        onFail={error => console.error(error)}
-                        currentLocation={true}
-                        currentLocationLabel='Current location'
+                                this.setState({
+                                    region: location,
+                                    latitude: details.geometry.location.lat,
+                                    longitude: details.geometry.location.lng
+                                });
+                            }}
+                            query={{
+                                key: 'AIzaSyBEvdNm2qFkHRcs7WJ9g4EoBv_wA3k3OO4',
+                                language: 'en',
+                                types: 'geocode'
+                            }}
+                            onFail={error => console.error(error)}
+                            currentLocation={true}
+                            currentLocationLabel='Current location'
 
-                    />
-                </View>
+                        />
+                    </View>
 
-                <TouchableOpacity style={{
-                    position: 'absolute',
-                    bottom: 100,
-                    left: 0,
-                    right: 0,
-                    backgroundColor: '#0099e5',
-                    marginHorizontal: 30,
-                    borderRadius: 5,
-                    elevation: 3
-                }}
-                    onPress={() => {
-                        this.props.setSelectedLatLon(this.state.latitude, this.state.longitude);
-                        Actions.pop();
+                    <TouchableOpacity style={{
+                        position: 'absolute',
+                        bottom: 100,
+                        left: 0,
+                        right: 0,
+                        backgroundColor: '#0099e5',
+                        marginHorizontal: 30,
+                        borderRadius: 5,
+                        elevation: 3
                     }}
-                >
-                    <Text style={{ padding: 10, textAlign: 'center', color: 'white' }}>Add Location</Text>
-                </TouchableOpacity>
+                        onPress={() => {
+                            this.props.setSelectedLatLon(this.state.latitude, this.state.longitude);
+                            Actions.pop();
+                        }}
+                    >
+                        <Text style={{ padding: 10, textAlign: 'center', color: 'white' }}>Add Location</Text>
+                    </TouchableOpacity>
 
-            </View>
+                </View>
             </SafeAreaView>
 
         );
     }
 }
 
-const styles=StyleSheet.create({
+const styles = StyleSheet.create({
     safe: {
         flex: 1,
         backgroundColor: '#0099e5'
     },
-    headerbar:{
+    headerbar: {
         flexDirection: 'row',
         backgroundColor: '#0099e5',
         padding: 5,

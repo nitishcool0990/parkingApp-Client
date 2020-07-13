@@ -12,23 +12,7 @@ const windowHeight = Dimensions.get('window').height;
 export default class Vehicles extends React.Component {
 
     state = {
-        vehiclelist: [
-            {
-                vehicle_no: '123123123',
-                category: 'Car',
-
-            },
-            {
-                vehicle_no: '123123123',
-                category: 'Car',
-
-            },
-            {
-                vehicle_no: '123123123',
-                category: 'Car',
-
-            }
-        ],
+        vehiclelist: [],
     }
 
     componentDidMount = () => {

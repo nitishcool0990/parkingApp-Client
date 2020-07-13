@@ -1,57 +1,79 @@
 {
-    "map": {
-        "x-frame-options": "DENY",
-        "x-xss-protection": "1; mode=block",
-        "keep-alive": "timeout=60",
-        "pragma": "no-cache",
-        "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
-        "transfer-encoding": "Identity",
-        "content-type": "application/json",
-        "expires": "0",
-        "connection": "keep-alive",
-        "date": "Fri, 29 May 2020 11:02:42 GMT",
-        "x-content-type-options": "nosniff",
-        "vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
-    }
-}
-
-{
-    "token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwNzUxMTExMTExIiwicm9sZXMiOlt7ImF1dGhvcml0eSI6IkFETUlOIn1dLCJleHAiOjE1OTA3NjkxOTYsImlhdCI6MTU5MDc1MTE5Nn0.LuVTlhK5c1UpUFUcW_kIG61aRIuVObFyCq9DqRCHkMEnyM4F3fNYdaz3eGVDxDThpcFhJ47rEraLKNzhnO0hpg"
-}
-
-{
-    "data": {
-        "createdDate": "2020-05-29T11:05:50",
-        "id": 20,
-        "lastLoginDate": null,
-        "mobileNo": "0751111111",
-        "modifiedDate": "2020-05-29T11:05:50",
-        "status": "ACTIVE",
-        "userProfile": null,
-        "userType": "ADMIN",
-        "vehicles": []
-    },
-    "message": "User Found",
-    "status": 1
-}
-
-{
-    "status": 1,
-    "data": [
+    "parkName": "Hemas Public Car Park",
+    "parkAddress": "123/1,Colombo 2",
+    "latitude": "6.9457949",
+    "longitude": "79.8429419",
+    "parkRegion": "Colombo 2",
+    "openTime": "6:24",
+    "closeTime": "18:24",
+    "description": "Eazy access, price shown in ticket, but no electronic ticket. Helpful people. It's not Hemas, Just Chatham street car Park. 50 rupees for Car and Van.",
+    "parkingTypeId": 2,
+    "parkingDetailsDtos": [
         {
-            "id": 1,
-            "createdDate": "2020-06-08T04:51:35",
-            "modifiedDate": "2020-06-08T04:51:35",
-            "parkName": "Nova Tech Zone (Pvt) Ltd",
-            "parkAddress": "NO 221, High Level Road, Wattegedara Rd, Maharagama 10230",
-            "parkRegion": "Maharagama",
-            "latitude": "6.8514958",
-            "longitude": "79.9193865",
-            "openTime": null,
-            "closeTime": null,
-            "status": "ACTIVE",
-            "parkingTypeId": null
+            "vehicleTypeId": 1,
+            "capacity": 20,
+            "monthlyRate": 50,
+            "nightCharges": 60,
+            "chargesType": "PERHOUR",
+            "parkingChargesDtos": [
+                {
+                    "hours": 1,
+                    "charges": 50
+                }
+            ]
+        },
+        {
+            "vehicleTypeId": 2,
+            "capacity": 20,
+            "monthlyRate": 40,
+            "nightCharges": 50,
+            "chargesType": "PERHOUR",
+            "parkingChargesDtos": [
+                {
+                    "hours": 1,
+                    "charges": 40
+                }
+            ]
         }
-    ],
-    "message": "Location search success"
+    ]
+}
+
+{
+    "parkName": "DDA Park 10",
+    "parkAddress": "North Delhi",
+    "latitude": "33.492775999999998",
+    "longitude": "67.67608642578126",
+    "parkRegion": "Gurgaon",
+    "openTime": "11:30",
+    "closeTime": "23:00",
+    "description": "Description Text",
+    "parkingTypeId": 2,
+    "parkingDetailsDtos": [
+        {
+            "vehicleTypeId": 3,
+            "capacity": 20,
+            "monthlyRate": 200,
+            "nightCharges": 30,
+            "chargesType": "PERHOUR",
+            "parkingChargesDtos": [
+                {
+                    "hours": 1,
+                    "charges": 20
+                }
+            ]
+        },
+        {
+            "vehicleTypeId": 4,
+            "capacity": 45,
+            "monthlyRate": 500,
+            "nightCharges": 40,
+            "chargesType": "SLOTS",
+            "parkingChargesDtos": [
+                {
+                    "hours": 1,
+                    "charges": 50
+                }
+            ]
+        }
+    ]
 }

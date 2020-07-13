@@ -7,6 +7,7 @@ import ExStyles from '../Utility/Styles';
 import { Actions } from 'react-native-router-flux';
 import { createNewVehicle_New, getVehicleTypeList, updateVehicle } from '../Netowrks/server';
 import ActivityIndicatorView from '../Components/ActivityIndicatorView';
+import { getData } from '../AsyncStorage/AsyncStorage';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -20,21 +21,33 @@ export default class AddVehicle extends React.Component {
         vehicle_type_id: [],
         checkbox: false,
         id:'',
-        vehicle_number: ''
-
+        vehicle_number: '',
+        token:''
     }
 
     componentDidMount = () => {
-        this.getVehicleTypeListFunction();
-        if (this.props.type == 'update') {
-            this.setState({
-                vehicle_number: this.props.data.vehicleNo,
-                selected_vehicle_type: this.props.data.vehicleType,
-                selected_vehicle_type_id: this.props.data.id,
-                checkbox: this.props.data.isDefault,
-                id:this.props.data.id
-            });
-        }
+        getData('token', (values) => {
+            if (values == null) {
+                Actions.login2();
+            } else {
+              var data = JSON.parse(values);
+              this.setState({
+                token: data.token,
+              }, () => {
+                this.getVehicleTypeListFunction();
+                if (this.props.type == 'update') {
+                    this.setState({
+                        vehicle_number: this.props.data.vehicleNo,
+                        selected_vehicle_type: this.props.data.vehicleType,
+                        selected_vehicle_type_id: this.props.data.id,
+                        checkbox: this.props.data.isDefault,
+                        id:this.props.data.id
+                    });
+                }
+              });
+            }
+          });
+        
     }
 
 
@@ -42,7 +55,7 @@ export default class AddVehicle extends React.Component {
         this.setState({
             isFetching: true
         }, () => {
-            getVehicleTypeList(this.props.token).then((values) => {
+            getVehicleTypeList(this.state.token).then((values) => {
                 if (values.status == 1) {
 
                     var vehicle_type_name = [];
@@ -160,7 +173,8 @@ export default class AddVehicle extends React.Component {
                             vehicle_number: '',
                             selected_vehicle_type: '- select vehicle type -',
                             selected_vehicle_type_id: '- select vehicle type -',
-                            checkbox: false
+                            checkbox: false,
+                            isFetching: false
                         }, () => {
                             alert(data.message);
                             this.props.load_vehicle();
@@ -222,7 +236,7 @@ export default class AddVehicle extends React.Component {
 
                             <ActionSheet
                                 ref={o => this.ActionSheet = o}
-                                title={'Select country code ?'}
+                                title={'Select vehicle type ?'}
                                 options={this.state.vehicle_type}
                                 cancelButtonIndex={this.state.vehicle_type.length}
                                 destructiveButtonIndex={this.state.vehicle_type.length - 1}

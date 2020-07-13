@@ -2,8 +2,8 @@ import * as React from 'react';
 import { View, StyleSheet, Dimensions, Image, SafeAreaView, Text, TextInput, TouchableOpacity } from 'react-native';
 import ExStyles from '../Utility/Styles';
 import { Actions } from 'react-native-router-flux';
-import { authonticate } from '../Netowrks/server';
-import { storeData } from '../AsyncStorage/AsyncStorage';
+import { authonticate, ViewProfile } from '../Netowrks/server';
+import { storeData, getData } from '../AsyncStorage/AsyncStorage';
 
 var jwtDecode = require('jwt-decode');
 
@@ -21,26 +21,56 @@ export default class Login2 extends React.Component {
         then(decoded);
     }
 
+    authsubfunction = (authsubfunction_data) => {
+        if (authsubfunction_data.data != undefined) {
+            this.setState({
+                dataArray: authsubfunction_data.data
+            }, () => {
+                this.decodeJWTToken(authsubfunction_data.data.token, (decodeJWTTokendata) => {
+                    console.log('#### decodeJWTToken :' + JSON.stringify(decodeJWTTokendata));
+                    if (decodeJWTTokendata != undefined) {
+                        const data = {
+                            token: authsubfunction_data.data.token,
+                            user_id: String(decodeJWTTokendata.user_id),
+                            user_role: decodeJWTTokendata.roles[0].authority,
+                            mobile: String(decodeJWTTokendata.sub)
+                        }
+
+                        getData('token', (values) => {
+                            if (values == null) {
+                                storeData('token', JSON.stringify(data));
+                                if (authsubfunction_data.status == 1) {
+                                    Actions.replace('home');
+                                } else {
+                                    Actions.replace('addvehicles');
+                                }
+                            } else {
+                                removeValue('token', () => {
+                                    storeData('token', JSON.stringify(data));
+                                    if (authsubfunction_data.status == 1) {
+                                        Actions.replace('home');
+                                    } else {
+                                        Actions.replace('addvehicles');
+                                    }
+                                });
+                            }
+                        })
+
+
+                    }
+                })
+            });
+        }
+    }
+
     authonticateFunction = () => {
         authonticate(this.state.username, this.state.password)
             .then(values => {
                 console.log('#### authonticate :' + JSON.stringify(values));
-                if (values.status == 3) {
-                    if (values.data != undefined) {
-                        this.setState({
-                            dataArray: values.data
-                        }, () => {
-                            this.decodeJWTToken(values.data.token, (value) => {
-
-                                const data={
-                                    token:values.data.token,
-                                    user_id:String(value.user_id)
-                                }
-                                storeData('token', JSON.stringify(data));
-                                Actions.home();
-                            });        
-                        });
-                    }
+                if (values.status == 1) {
+                    this.authsubfunction(values);
+                } else if (values.status == 3) {
+                    this.authsubfunction(values);
                 } else {
                     alert(values.status + '-' + values.error);
                 }
@@ -101,6 +131,7 @@ export default class Login2 extends React.Component {
                                 fontSize: 18
                             }}
                             placeholder={'Password'}
+                            secureTextEntry={true}
                             onChangeText={(value) => {
                                 this.setState({
                                     password: value
@@ -137,7 +168,7 @@ export default class Login2 extends React.Component {
                             <Text style={{ textAlign: 'center', fontSize: 18 }}>I dont'n have an account</Text>
                         </TouchableOpacity>
                     </View>
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                         style={{
                             marginVertical: 10,
                             position: 'absolute',
@@ -148,7 +179,7 @@ export default class Login2 extends React.Component {
                             Actions.register();
                         }}>
                         <Text style={{ textAlign: 'center', fontSize: 18 }}>Reset password</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
             </SafeAreaView >
         );

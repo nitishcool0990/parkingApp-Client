@@ -66,7 +66,12 @@ export default class Profile extends React.Component {
         // } 
         else {
             var status = 'ACTIVE';
-            var userType = 'ADMIN';
+            var userType = '';
+            if(this.state.check=='car'){
+            userType='USER'
+            }else{
+                userType='AGENT'
+            }
             this.setState({
                 isFetching: true,
             }, () => {
@@ -96,7 +101,12 @@ export default class Profile extends React.Component {
             alert('Enter email');
         } else {
             var status = 'ACTIVE';
-            var userType = 'ADMIN';
+            var userType = '';
+            if(this.state.check=='car'){
+            userType='USER'
+            }else{
+                userType='AGENT'
+            }
             this.setState({
                 isFetching: true,
             }, () => {
@@ -148,8 +158,11 @@ export default class Profile extends React.Component {
                     }
                 })
                 .catch(error => {
-                    console.log('Api call findUserProfile error:' + error.message);
-                    this.setState({ isFetching: false });
+                    this.setState({
+                        isFetching: true
+                    },()=>{
+                        console.log('Api call findUserProfile error:' + error.message);
+                    });
                 });
         });
 

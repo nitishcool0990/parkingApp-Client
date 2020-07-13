@@ -98,10 +98,6 @@ export default class SideMenu extends React.Component {
                         <FontAwesome name={'circle'} size={18} style={{ marginHorizontal: 5 }} />
                         <Text>My Bookings</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ marginTop: 5, paddingVertical: 10, flexDirection: 'row' }}>
-                        <FontAwesome name={'circle'} size={18} style={{ marginHorizontal: 5 }} />
-                        <Text>Book My Spot</Text>
-                    </TouchableOpacity>
                     <TouchableOpacity
                         style={{
                             marginTop: 5,
@@ -118,6 +114,18 @@ export default class SideMenu extends React.Component {
                     <View style={{ height: 50 }}>
 
                     </View>
+                    <TouchableOpacity
+                        style={{
+                            marginTop: 5,
+                            paddingVertical: 10,
+                            flexDirection: 'row'
+                        }}
+                        onPress={() => {
+                            Actions.resetpassword();
+                        }}>
+                        <FontAwesome name={'circle'} size={18} style={{ marginHorizontal: 5 }} />
+                        <Text>Reset Password</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity
                         style={{
                             marginTop: 5,

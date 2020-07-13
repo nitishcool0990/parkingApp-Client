@@ -4,7 +4,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MapView, { Marker, Coordinate } from 'react-native-maps';
 import TabbarComponent from '../Components/TabbarComponent';
 import Geolocation from 'react-native-geolocation-service';
-import { findAllLocations } from '../Netowrks/server';
+import { getVehicleTypeList, searchParkLocation } from '../Netowrks/server';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { Actions } from 'react-native-router-flux';
 import { getData } from '../AsyncStorage/AsyncStorage';
 
@@ -21,7 +22,7 @@ export default class Home extends React.Component {
     //   latitudeDelta: 0.0922,
     //   longitudeDelta: 0.0421,
     // },
-    region:{},
+    region: {},
     selectedLocation: '',
     modalVisible: false,
     vehiclelist: [
@@ -36,6 +37,11 @@ export default class Home extends React.Component {
       }],
     token: '',
     locationList: [],
+    vehicle_type: [],
+    vehicle_type_id: [],
+    selectedVehicleId: '',
+    selectedLat: '3.7.88',
+    selectedLon: '1.2.33'
   }
 
   onRegionChange = (region) => {
@@ -200,20 +206,51 @@ export default class Home extends React.Component {
   };
 
   searchLocation = () => {
-    findAllLocations(this.state.token, this.state.selectedLocation).then((value) => {
+    searchParkLocation(this.state.token, this.state.selectedLat, this.state.selectedLon, this.state.selectedVehicleId).then((value) => {
 
-      var region = {
-        latitude: value.data[0].latitude,
-        longitude: value.data[0].longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      }
+      // var region = {
+      //   latitude: value.data[0].latitude,
+      //   longitude: value.data[0].longitude,
+      //   latitudeDelta: 0.0922,
+      //   longitudeDelta: 0.0421,
+      // }
 
-      this.setState({
-        locationList: value.data,
-        region: region
+      // this.setState({
+      //   locationList: value.data,
+      //   region: region
+      // });
+    });
+  }
+
+  getVehicleTypeListFunction = () => {
+    this.setState({
+      isFetching: true
+    }, () => {
+      getVehicleTypeList(this.state.token).then((values) => {
+        if (values.status == 1) {
+
+          var vehicle_type_name = [];
+          var vehicle_type_id = [];
+
+          values.data.map((val) => {
+            vehicle_type_name.push(val.vehicleName);
+            vehicle_type_id.push(val.id);
+          });
+
+          vehicle_type_name.push('cancel');
+          vehicle_type_id.push(0);
+
+          this.setState({
+            vehicle_type: vehicle_type_name,
+            vehicle_type_id: vehicle_type_id,
+            isFetching: false
+          });
+        }
+      }).catch((error) => {
+        alert(error);
       });
     });
+
   }
 
   setAccuracy = (value) => this.setState({ highAccuracy: value });
@@ -226,10 +263,10 @@ export default class Home extends React.Component {
     Geolocation.getCurrentPosition(
       (position) => {
         console.warn(position.coords);
-       
+
         var location = {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }
@@ -252,6 +289,8 @@ export default class Home extends React.Component {
         var data = JSON.parse(values);
         this.setState({
           token: data.token,
+        }, () => {
+          this.getVehicleTypeListFunction();
         });
 
       }
@@ -331,30 +370,30 @@ export default class Home extends React.Component {
           />
 
           {
-          (this.state.locationList.length!=0)?
-          (this.state.locationList.map((value) => {
-            console.warn(JSON.stringify(value));
-            return (
-              <Marker
-                draggable
-                coordinate={{
-                  latitude: value.latitude,
-                  longitude: value.longitude,
-                }}
-                showsUserLocation={true}
-                onDragEnd={(e) => alert(JSON.stringify(e.nativeEvent.coordinate))}
-                title={value.parkName}
-                description={value.parkAddress}
-                onPress={() => {
-                  Actions.push('parkdetails',{});
-                }}
-              />
-            );
+            (this.state.locationList.length != 0) ?
+              (this.state.locationList.map((value) => {
+                console.warn(JSON.stringify(value));
+                return (
+                  <Marker
+                    draggable
+                    coordinate={{
+                      latitude: value.latitude,
+                      longitude: value.longitude,
+                    }}
+                    showsUserLocation={true}
+                    onDragEnd={(e) => alert(JSON.stringify(e.nativeEvent.coordinate))}
+                    title={value.parkName}
+                    description={value.parkAddress}
+                    onPress={() => {
+                      Actions.push('parkdetails', {});
+                    }}
+                  />
+                );
+              }
+              ))
+              :
+              null
           }
-          ))
-          :
-          null
-        }
 
         </MapView>
         {/* <View style={styles.searchbox}>
@@ -383,6 +422,56 @@ export default class Home extends React.Component {
           </TouchableOpacity>
         </View> */}
 
+        {/* <View style={{
+          backgroundColor: "white",
+          position: 'absolute',
+          top: 100,
+          left: 0,
+          right: 0,
+          elevation: 3,
+          marginHorizontal: 20,
+          borderRadius: 5,
+          flexDirection: 'row',
+          alignItems: 'center'
+        }}>
+          <GooglePlacesAutocomplete
+            placeholder='Search Location'
+            // minLength={2} // minimum length of text to search
+            //autoFocus={false}
+            fetchDetails={true}
+            listViewDisplayed='auto'
+            keyboardShouldPersistTaps={'always'}
+            onPress={(data, details = null) => {
+              // 'details' is provided when fetchDetails = true
+              //console.log(data, details);
+              console.warn("1 " + JSON.stringify(data))
+              console.warn("2 " + JSON.stringify(details.geometry.location))
+
+              var location = {
+                latitude: details.geometry.location.lat,
+                longitude: details.geometry.location.lng,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              }
+
+              this.setState({
+                region: location,
+                latitude: details.geometry.location.lat,
+                longitude: details.geometry.location.lng
+              });
+            }}
+            query={{
+              key:'AIzaSyBEvdNm2qFkHRcs7WJ9g4EoBv_wA3k3OO4',
+              language: 'en',
+              types: 'geocode'
+            }}
+            onFail={error => console.error(error)}
+            currentLocation={true}
+            currentLocationLabel='Current location'
+
+          />
+        </View> */}
+
         <View style={styles.searchbox2}>
           <Text style={{
             color: 'black',
@@ -403,7 +492,8 @@ export default class Home extends React.Component {
             <TouchableOpacity onPress={() => { this.searchLocation(this.state.selectedLocation) }}>
               <FontAwesome name='search' size={35} color={'balck'} />
             </TouchableOpacity>
-            <TextInput
+
+            {/* <TextInput
               placeholder={'Select Location'}
               placeholderTextColor={'balck'}
               value={this.state.selectedLocation}
@@ -413,7 +503,60 @@ export default class Home extends React.Component {
                 });
               }}
               style={styles.searchtextinput}
-            />
+            /> */}
+            <GooglePlacesAutocomplete
+            placeholder='Search Location'
+            // minLength={2} // minimum length of text to search
+            //autoFocus={false}
+            fetchDetails={true}
+            listViewDisplayed='auto'
+            keyboardShouldPersistTaps={'always'}
+            onPress={(data, details = null) => {
+              // 'details' is provided when fetchDetails = true
+              //console.log(data, details);
+              console.warn("1 " + JSON.stringify(data))
+              console.warn("2 " + JSON.stringify(details.geometry.location))
+
+              var location = {
+                latitude: details.geometry.location.lat,
+                longitude: details.geometry.location.lng,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              }
+
+              this.setState({
+                region: location,
+                latitude: details.geometry.location.lat,
+                longitude: details.geometry.location.lng
+              });
+            }}
+            query={{
+              key:'AIzaSyBEvdNm2qFkHRcs7WJ9g4EoBv_wA3k3OO4',
+              language: 'en',
+              types: 'geocode'
+            }}
+            onFail={error => console.error(error)}
+            currentLocation={true}
+            currentLocationLabel='Current location'
+            styles={{
+              textInputContainer: {
+                backgroundColor: 'rgba(0,0,0,0)',
+                borderTopWidth: 0,
+                borderBottomWidth: 0,
+              },
+              textInput: {
+                marginLeft: 0,
+                marginRight: 0,
+                height: 38,
+                color: '#5d5d5d',
+                fontSize: 16,
+              },
+              predefinedPlacesDescription: {
+                color: '#1faadb',
+              },
+            }}
+          />
+
             <TouchableOpacity
               onPress={() => { this.toggleModal(true) }}
               style={styles.vehiclebtntouchable}
@@ -478,7 +621,7 @@ export default class Home extends React.Component {
               <View style={{ marginTop: 10 }}>
                 <FlatList
                   style={{ flex: 1 }}
-                  data={this.state.vehiclelist}
+                  data={this.state.vehicle_type}
                   numColumns={2}
                   renderItem={(value) => {
                     return (
@@ -490,8 +633,15 @@ export default class Home extends React.Component {
                         margin: 1,
                         borderRadius: 5,
                         alignItems: 'center'
+                      }} onPress={() => {
+                        this.setState({
+                          selectedVehicle: value.item,
+                          selectedVehicleId: this.state.vehicle_type_id[value.index]
+                        }, () => {
+                          this.toggleModal(false)
+                        });
                       }}>
-                        <Text style={{ textAlign: 'center', padding: 5 }}>{value.item.name}</Text>
+                        <Text style={{ textAlign: 'center', padding: 5 }}>{value.item}</Text>
                         <Image
                           source={require('../Images/btn_car.png')}
                           resizeMode={'center'}

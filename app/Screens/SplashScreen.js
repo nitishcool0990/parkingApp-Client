@@ -12,16 +12,13 @@ export default class SplashScreen extends React.Component {
         setTimeout(() => {
             getData('token', (values) => {
                 if (values == null) {
-                    Actions.login2();
+                    Actions.replace('login2');
                 } else {
                     var data = JSON.parse(values);
-
                     this.findUserByIdFunction(data.token, data.user_id);
                 }
             });
-
         }, 1000);
-
     }
 
     findUserByIdFunction = (token, id) => {
@@ -29,7 +26,8 @@ export default class SplashScreen extends React.Component {
             console.warn(value);
             Actions.main({currenttoken: token });
         }).catch((error) => {
-            Actions.login2();
+            console.warn(error);
+            Actions.replace('login2');
         });
     }
 
