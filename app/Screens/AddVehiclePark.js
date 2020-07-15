@@ -61,7 +61,7 @@ export default class AddVehiclepark extends React.Component {
                 var data = JSON.parse(values);
                 this.setState({
                     isFetching: true,
-                    token:data.token
+                    token: data.token
                 });
                 getAllParkingTypeList(data.token).then((getAllParkingTypeListdata) => {
                     if (getAllParkingTypeListdata.status == 1) {
@@ -118,19 +118,19 @@ export default class AddVehiclepark extends React.Component {
     }
 
     addparkingLocationInSystemFunction = () => {
-        if (this.state.parking_name=='') {
-alert('Enter park name');
-        } else if(this.state.parking_region==''){
+        if (this.state.parking_name == '') {
+            alert('Enter park name');
+        } else if (this.state.parking_region == '') {
             alert('Enter park region');
-        }else if(this.state.parking_address==''){
+        } else if (this.state.parking_address == '') {
             alert('Enter park address');
-        }else if(this.state.selected_park_type_id==''){
+        } else if (this.state.selected_park_type_id == '') {
             alert('Enter park type');
-        }else if(this.state.longitude==''){
+        } else if (this.state.longitude == '') {
             alert('Enter park location');
-        }else if(this.state.longitude==''){
+        } else if (this.state.longitude == '') {
             alert('Enter park locaion');
-        }else {
+        } else {
             const d = {
                 "images": [],
                 "parkingLoc": {
@@ -149,17 +149,17 @@ alert('Enter park name');
             this.setState({
                 isFetching: true
             }, () => {
-                addparkingLocationInSystem(this.props.token,d.images, d.parkingLoc, (value) => {
+                addparkingLocationInSystem(this.props.token, d.images, d.parkingLoc, (value) => {
                     this.setState({
                         isFetching: false
-                    },()=>{
-                       this.props.getAllParkingsLocationofAgentFunction(this.props.token)
-                       Actions.pop();
+                    }, () => {
+                        this.props.getAllParkingsLocationofAgentFunction(this.props.token)
+                        Actions.pop();
                     });
-                },(error)=>{
+                }, (error) => {
                     this.setState({
                         isFetching: false
-                    },()=>{
+                    }, () => {
                         console.warn('error', error);
                     });
                 });
@@ -248,7 +248,7 @@ alert('Enter park name');
     //     });
     // }
 
-    addVehiclesToFlatList = (vehicle_type, capacity, monthlyRate, nightCharges, chargesType, chargesForOneHour) => {
+    addVehiclesToFlatList = (vehicle_type, capacity, monthlyRate, nightCharges,maxLimit, chargesType, chargesForOneHour) => {
         var array = this.state.flatListData.slice();
 
         var narray =
@@ -257,6 +257,7 @@ alert('Enter park name');
             "capacity": (capacity != undefined) ? Number(capacity) : '',
             "monthlyRate": (monthlyRate != undefined) ? Number(monthlyRate) : '',
             "nightCharges": (nightCharges != undefined) ? Number(nightCharges) : '',
+            'maxLimit':(nightCharges != undefined) ? Number(maxLimit) : '',
             "chargesType": (chargesType != undefined) ? chargesType : '',
             "parkingChargesDtos": (chargesForOneHour != undefined) ? chargesForOneHour : []
         }

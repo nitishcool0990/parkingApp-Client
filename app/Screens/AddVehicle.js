@@ -20,9 +20,9 @@ export default class AddVehicle extends React.Component {
         vehicle_type: ['BIKE', 'CAR', 'VAN', 'cancel'],
         vehicle_type_id: [],
         checkbox: false,
-        id:'',
+        id: '',
         vehicle_number: '',
-        token:''
+        token: ''
     }
 
     componentDidMount = () => {
@@ -30,24 +30,24 @@ export default class AddVehicle extends React.Component {
             if (values == null) {
                 Actions.login2();
             } else {
-              var data = JSON.parse(values);
-              this.setState({
-                token: data.token,
-              }, () => {
-                this.getVehicleTypeListFunction();
-                if (this.props.type == 'update') {
-                    this.setState({
-                        vehicle_number: this.props.data.vehicleNo,
-                        selected_vehicle_type: this.props.data.vehicleType,
-                        selected_vehicle_type_id: this.props.data.id,
-                        checkbox: this.props.data.isDefault,
-                        id:this.props.data.id
-                    });
-                }
-              });
+                var data = JSON.parse(values);
+                this.setState({
+                    token: data.token,
+                }, () => {
+                    this.getVehicleTypeListFunction();
+                    if (this.props.type == 'update') {
+                        this.setState({
+                            vehicle_number: this.props.data.vehicleNo,
+                            selected_vehicle_type: this.props.data.vehicleType,
+                            selected_vehicle_type_id: this.props.data.id,
+                            checkbox: this.props.data.isDefault,
+                            id: this.props.data.id
+                        });
+                    }
+                });
             }
-          });
-        
+        });
+
     }
 
 
@@ -101,7 +101,9 @@ export default class AddVehicle extends React.Component {
                             isFetching: false
                         }, () => {
                             alert(data.message);
-                            this.props.load_vehicle();
+                            if (this.props.load_vehicle != undefined) {
+                                this.props.load_vehicle();
+                            }
                         });
 
                     } else {
@@ -167,7 +169,7 @@ export default class AddVehicle extends React.Component {
             this.setState({
                 isFetching: true
             }, () => {
-                updateVehicle(this.props.token,this.state.id, this.state.vehicle_number, this.state.selected_vehicle_type_id, this.state.selected_vehicle_type, this.state.checkbox).then((data) => {
+                updateVehicle(this.props.token, this.state.id, this.state.vehicle_number, this.state.selected_vehicle_type_id, this.state.selected_vehicle_type, this.state.checkbox).then((data) => {
                     if (data.status == 1) {
                         this.setState({
                             vehicle_number: '',

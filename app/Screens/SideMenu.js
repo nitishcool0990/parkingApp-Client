@@ -5,15 +5,18 @@ import { Actions } from 'react-native-router-flux';
 import { removeValue, getData } from '../AsyncStorage/AsyncStorage';
 
 var jwtDecode = require('jwt-decode');
-
+var user_id = "";
+var token = "";
+var user_role = "";
+var data = "";
 export default class SideMenu extends React.Component {
     render = () => {
-       var user_id="";
-       var token="";
         getData('token', (value) => {
-           var data= JSON.parse(value);
-         user_id = data.user_id;
-         token = data.token;
+            data = JSON.parse(value);
+            user_id = data.user_id;
+            token = data.token;
+            user_role = data.user_role;
+
         });
         return (
             <SafeAreaView style={styles.safe}>
@@ -37,7 +40,7 @@ export default class SideMenu extends React.Component {
                             flexDirection: 'row'
                         }}
                         onPress={() => {
-                            Actions.push('profile', {'user_id':user_id,'token':token});
+                            Actions.push('profile', { 'user_id': user_id, 'token': token });
                             Actions.drawerClose();
                         }}
                     >
@@ -51,7 +54,7 @@ export default class SideMenu extends React.Component {
                             flexDirection: 'row'
                         }}
                         onPress={() => {
-                            Actions.push('vehicles', {'user_id':user_id,'token':token});
+                            Actions.push('vehicles', { 'user_id': user_id, 'token': token });
                             Actions.drawerClose();
                         }}>
                         <FontAwesome name={'circle'} size={18} style={{ marginHorizontal: 5 }} />
@@ -98,19 +101,26 @@ export default class SideMenu extends React.Component {
                         <FontAwesome name={'circle'} size={18} style={{ marginHorizontal: 5 }} />
                         <Text>My Bookings</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity
-                        style={{
-                            marginTop: 5,
-                            paddingVertical: 10,
-                            flexDirection: 'row'
-                        }}
-                        onPress={() => {
-                            Actions.push('parking',{'user_id':user_id,'token':token});
-                            Actions.drawerClose();
-                        }}>
-                        <FontAwesome name={'circle'} size={18} style={{ marginHorizontal: 5 }} />
-                        <Text>My Dashboard (for agent)</Text>
-                    </TouchableOpacity>
+
+                    {(user_role != 'USER') ?
+                        <TouchableOpacity
+                            style={{
+                                marginTop: 5,
+                                paddingVertical: 10,
+                                flexDirection: 'row'
+                            }}
+                            onPress={() => {
+                                Actions.push('parking', { 'user_id': user_id, 'token': token });
+                                Actions.drawerClose();
+                            }}>
+                            <FontAwesome name={'circle'} size={18} style={{ marginHorizontal: 5 }} />
+                            <Text>My Dashboard (for agent)</Text>
+                        </TouchableOpacity>
+                        :
+                        null
+                    }
+
+
                     <View style={{ height: 50 }}>
 
                     </View>

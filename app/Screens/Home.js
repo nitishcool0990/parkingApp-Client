@@ -40,33 +40,166 @@ export default class Home extends React.Component {
     vehicle_type: [],
     vehicle_type_id: [],
     selectedVehicleId: '',
-    selectedLat: '3.7.88',
-    selectedLon: '1.2.33'
+    selectedLat: '6.9480799',
+    selectedLon: '79.889757'
+  }
+
+  componentDidMount = () => {
+    this.getLocation();
+
+    getData('token', (values) => {
+      if (values == null) {
+        Actions.login2();
+      } else {
+        var data = JSON.parse(values);
+        this.setState({
+          token: data.token,
+        }, () => {
+          this.getVehicleTypeListFunction();
+        });
+
+      }
+    });
+  }
+
+  // BackEndAPI
+  searchLocation = () => {
+    if (this.state.selectedLat == '') {
+      alert('Select coordinates');
+    } else if (this.state.selectedLon == '') {
+      alert('Select coordinates');
+    } else if (this.state.selectedVehicleId == '') {
+      alert('Select vehicle type');
+    } else {
+      searchParkLocation(
+        this.state.token,
+        this.state.selectedLat,
+        this.state.selectedLon,
+        this.state.selectedVehicleId,
+        (value) => {
+          var region = {
+            latitude: this.state.selectedLat,
+            longitude: this.state.selectedLon,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }
+          var vdata=JSON.parse(value);
+          if (vdata.status == 1) {
+            this.setState({
+              locationList: (vdata.data!=null)?vdata.data:[],
+              region: region
+            },()=>{
+             alert(JSON.stringify(vdata))
+            });
+          }
+        },
+        (error) => {
+          console.warn(error);
+        }
+      );
+    }
+
+  }
+
+  getVehicleTypeListFunction = () => {
+    this.setState({
+      isFetching: true
+    }, () => {
+      getVehicleTypeList(this.state.token).then((values) => {
+        if (values.status == 1) {
+
+          var vehicle_type_name = [];
+          var vehicle_type_id = [];
+
+          values.data.map((val) => {
+            vehicle_type_name.push(val.vehicleName);
+            vehicle_type_id.push(val.id);
+          });
+
+          vehicle_type_name.push('cancel');
+          vehicle_type_id.push(0);
+
+          this.setState({
+            vehicle_type: vehicle_type_name,
+            vehicle_type_id: vehicle_type_id,
+            isFetching: false
+          });
+        }
+      }).catch((error) => {
+        alert(error);
+      });
+    });
+
+  }
+
+  //UI Function
+
+  toggleModal = (visible) => {
+    this.setState({ modalVisible: visible });
   }
 
   onRegionChange = (region) => {
     this.setState({ region });
   }
 
-  toggleModal = (visible) => {
-    this.setState({ modalVisible: visible });
+  getLocationAutoSearchView = () => {
+    return (
+      <GooglePlacesAutocomplete
+        placeholder='Search Location'
+        // minLength={2} // minimum length of text to search
+        //autoFocus={false}
+        fetchDetails={true}
+        listViewDisplayed='auto'
+        keyboardShouldPersistTaps={'always'}
+        onPress={(data, details = null) => {
+          // 'details' is provided when fetchDetails = true
+          //console.log(data, details);
+          console.warn("1 " + JSON.stringify(data))
+          console.warn("2 " + JSON.stringify(details.geometry.location))
+
+          var location = {
+            latitude: details.geometry.location.lat,
+            longitude: details.geometry.location.lng,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }
+
+          this.setState({
+            region: location,
+            latitude: details.geometry.location.lat,
+            longitude: details.geometry.location.lng
+          });
+        }}
+        query={{
+          key: 'AIzaSyBEvdNm2qFkHRcs7WJ9g4EoBv_wA3k3OO4',
+          language: 'en',
+          types: 'geocode'
+        }}
+        onFail={error => console.error(error)}
+        currentLocation={true}
+        currentLocationLabel='Current location'
+        styles={{
+          textInputContainer: {
+            backgroundColor: 'rgba(0,0,0,0)',
+            borderTopWidth: 0,
+            borderBottomWidth: 0,
+          },
+          textInput: {
+            marginLeft: 0,
+            marginRight: 0,
+            height: 38,
+            color: '#5d5d5d',
+            fontSize: 16,
+          },
+          predefinedPlacesDescription: {
+            color: '#1faadb',
+          },
+        }}
+      />
+    );
   }
 
-  getCurrentLocation = async () => {
-    const hasLocationPermission = await this.hasLocationPermission();
-    if (hasLocationPermission) {
-      Geolocation.getCurrentPosition(
-        (position) => {
-          console.warn(position);
-        },
-        (error) => {
-          // See error code charts below.
-          console.log(error.code, error.message);
-        },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-      );
-    }
-  }
+  //Current Location Function
 
   hasLocationPermissionIOS = async () => {
     const openSetting = () => {
@@ -146,14 +279,29 @@ export default class Home extends React.Component {
       return;
     }
 
-    this.setState({ loading: true }, () => {
+    this.setState({ isFetching: true }, () => {
       Geolocation.getCurrentPosition(
         (position) => {
-          this.setState({ location: position, loading: false });
+
+          const data = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }
+
+          console.warn("@@@ :" + position.coords.latitude);
+          console.warn("@@@ :" + position.coords.longitude);
+
+          this.setState({
+            location: position,
+            region: data,
+            isFetching: false
+          });
           console.log(position);
         },
         (error) => {
-          this.setState({ location: error, loading: false });
+          this.setState({ location: error, isFetching: false });
           console.log(error);
         },
         {
@@ -205,117 +353,18 @@ export default class Home extends React.Component {
     }
   };
 
-  searchLocation = () => {
-    searchParkLocation(this.state.token, this.state.selectedLat, this.state.selectedLon, this.state.selectedVehicleId).then((value) => {
-
-      // var region = {
-      //   latitude: value.data[0].latitude,
-      //   longitude: value.data[0].longitude,
-      //   latitudeDelta: 0.0922,
-      //   longitudeDelta: 0.0421,
-      // }
-
-      // this.setState({
-      //   locationList: value.data,
-      //   region: region
-      // });
-    });
-  }
-
-  getVehicleTypeListFunction = () => {
-    this.setState({
-      isFetching: true
-    }, () => {
-      getVehicleTypeList(this.state.token).then((values) => {
-        if (values.status == 1) {
-
-          var vehicle_type_name = [];
-          var vehicle_type_id = [];
-
-          values.data.map((val) => {
-            vehicle_type_name.push(val.vehicleName);
-            vehicle_type_id.push(val.id);
-          });
-
-          vehicle_type_name.push('cancel');
-          vehicle_type_id.push(0);
-
-          this.setState({
-            vehicle_type: vehicle_type_name,
-            vehicle_type_id: vehicle_type_id,
-            isFetching: false
-          });
-        }
-      }).catch((error) => {
-        alert(error);
-      });
-    });
-
-  }
-
-  setAccuracy = (value) => this.setState({ highAccuracy: value });
+  setAccuracy = (value) => this.setState({ highAccuracy: value }, () => {
+    alert(value);
+  });
   setSignificantChange = (value) =>
     this.setState({ significantChanges: value });
   setLocationDialog = (value) => this.setState({ showLocationDialog: value });
   setForceLocation = (value) => this.setState({ forceLocation: value });
 
-  componentDidMount = () => {
-    Geolocation.getCurrentPosition(
-      (position) => {
-        console.warn(position.coords);
-
-        var location = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }
-
-        this.setState({
-          region: location
-        });
-      },
-      (error) => {
-        // See error code charts below.
-        console.log(error.code, error.message);
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-    );
-
-    getData('token', (values) => {
-      if (values == null) {
-        Actions.login2();
-      } else {
-        var data = JSON.parse(values);
-        this.setState({
-          token: data.token,
-        }, () => {
-          this.getVehicleTypeListFunction();
-        });
-
-      }
-    });
-
-  }
 
   render = () => {
     return (
       <SafeAreaView style={styles.safe}>
-        {/* <View style={styles.headerview}>
-          <Text style={styles.headertext}>
-            Vpark
-                    </Text>
-        </View> */}
-        {/* <View style={styles.headerbar}>
-          <Text style={{ flex: 1, textAlign: 'center', fontSize: 20, color: 'white' }}>Welcome Mr. ABC</Text>
-          <TouchableOpacity onPress={() => { Actions.push('account') }}>
-            <Image
-              source={require('../Images/profile.png')}
-              resizeMode={'contain'}
-              style={{ width: 50, height: 50 }}
-            />
-          </TouchableOpacity>
-        </View> */}
 
         <View style={styles.headerbar2}>
           <TouchableOpacity onPress={() => { }}>
@@ -365,7 +414,7 @@ export default class Home extends React.Component {
             title={'Your Location'}
             description={'This is a description of the marker'}
             onPress={() => {
-              //Actions.push('parkdetails');
+              // Actions.push('parkdetails');
             }}
           />
 
@@ -385,7 +434,7 @@ export default class Home extends React.Component {
                     title={value.parkName}
                     description={value.parkAddress}
                     onPress={() => {
-                      Actions.push('parkdetails', {});
+                      Actions.push('parkdetails', {'data':value});
                     }}
                   />
                 );
@@ -422,56 +471,7 @@ export default class Home extends React.Component {
           </TouchableOpacity>
         </View> */}
 
-        {/* <View style={{
-          backgroundColor: "white",
-          position: 'absolute',
-          top: 100,
-          left: 0,
-          right: 0,
-          elevation: 3,
-          marginHorizontal: 20,
-          borderRadius: 5,
-          flexDirection: 'row',
-          alignItems: 'center'
-        }}>
-          <GooglePlacesAutocomplete
-            placeholder='Search Location'
-            // minLength={2} // minimum length of text to search
-            //autoFocus={false}
-            fetchDetails={true}
-            listViewDisplayed='auto'
-            keyboardShouldPersistTaps={'always'}
-            onPress={(data, details = null) => {
-              // 'details' is provided when fetchDetails = true
-              //console.log(data, details);
-              console.warn("1 " + JSON.stringify(data))
-              console.warn("2 " + JSON.stringify(details.geometry.location))
-
-              var location = {
-                latitude: details.geometry.location.lat,
-                longitude: details.geometry.location.lng,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-              }
-
-              this.setState({
-                region: location,
-                latitude: details.geometry.location.lat,
-                longitude: details.geometry.location.lng
-              });
-            }}
-            query={{
-              key:'AIzaSyBEvdNm2qFkHRcs7WJ9g4EoBv_wA3k3OO4',
-              language: 'en',
-              types: 'geocode'
-            }}
-            onFail={error => console.error(error)}
-            currentLocation={true}
-            currentLocationLabel='Current location'
-
-          />
-        </View> */}
-
+        
         <View style={styles.searchbox2}>
           <Text style={{
             color: 'black',
@@ -493,69 +493,7 @@ export default class Home extends React.Component {
               <FontAwesome name='search' size={35} color={'balck'} />
             </TouchableOpacity>
 
-            {/* <TextInput
-              placeholder={'Select Location'}
-              placeholderTextColor={'balck'}
-              value={this.state.selectedLocation}
-              onChangeText={(value) => {
-                this.setState({
-                  selectedLocation: value
-                });
-              }}
-              style={styles.searchtextinput}
-            /> */}
-            <GooglePlacesAutocomplete
-            placeholder='Search Location'
-            // minLength={2} // minimum length of text to search
-            //autoFocus={false}
-            fetchDetails={true}
-            listViewDisplayed='auto'
-            keyboardShouldPersistTaps={'always'}
-            onPress={(data, details = null) => {
-              // 'details' is provided when fetchDetails = true
-              //console.log(data, details);
-              console.warn("1 " + JSON.stringify(data))
-              console.warn("2 " + JSON.stringify(details.geometry.location))
-
-              var location = {
-                latitude: details.geometry.location.lat,
-                longitude: details.geometry.location.lng,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-              }
-
-              this.setState({
-                region: location,
-                latitude: details.geometry.location.lat,
-                longitude: details.geometry.location.lng
-              });
-            }}
-            query={{
-              key:'AIzaSyBEvdNm2qFkHRcs7WJ9g4EoBv_wA3k3OO4',
-              language: 'en',
-              types: 'geocode'
-            }}
-            onFail={error => console.error(error)}
-            currentLocation={true}
-            currentLocationLabel='Current location'
-            styles={{
-              textInputContainer: {
-                backgroundColor: 'rgba(0,0,0,0)',
-                borderTopWidth: 0,
-                borderBottomWidth: 0,
-              },
-              textInput: {
-                marginLeft: 0,
-                marginRight: 0,
-                height: 38,
-                color: '#5d5d5d',
-                fontSize: 16,
-              },
-              predefinedPlacesDescription: {
-                color: '#1faadb',
-              },
-            }}
-          />
+            {this.getLocationAutoSearchView()}
 
             <TouchableOpacity
               onPress={() => { this.toggleModal(true) }}

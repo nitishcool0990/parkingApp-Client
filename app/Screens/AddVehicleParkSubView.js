@@ -39,7 +39,8 @@ export default class AddVehicleParkSubView extends React.Component {
         vehicle_type_id: [],
         hours: '',
         charge: '',
-        chagers_type:['PERHOUR','SLOTS','cancel'],
+        maxLimit:'',
+        chagers_type: ['PERHOUR', 'SLOTS', 'cancel'],
         selected_charges_type: '- select charges type -',
     }
 
@@ -182,25 +183,26 @@ export default class AddVehicleParkSubView extends React.Component {
         );
     }
 
-    addVehiclesToFlatList = (vehicle_type, capacity, monthlyRate, nightCharges, chargesType, chargesForOneHour) => {
-        var array = this.state.flatListData.slice();
+    // addVehiclesToFlatList = (vehicle_type, capacity, monthlyRate, nightCharges, maxLimit, chargesType, chargesForOneHour) => {
+    //     var array = this.state.flatListData.slice();
 
-        var narray =
-        {
-            "vehicleTypeId": Number(vehicle_type),
-            "capacity": Number(capacity),
-            "monthlyRate": Number(monthlyRate),
-            "nightCharges": Number(nightCharges),
-            "chargesType": chargesType,
-            "parkingChargesDtos": this.state.parkingChargesDtos
-        }
-        array.push(narray);
-        this.setState({
-            flatListData: array
-        }, () => {
-            Actions.pop({ data: this.state.flatListData });
-        });
-    }
+    //     var narray =
+    //     {
+    //         "vehicleTypeId": Number(vehicle_type),
+    //         "capacity": Number(capacity),
+    //         "monthlyRate": Number(monthlyRate),
+    //         "nightCharges": Number(nightCharges),
+    //         "maxLimit": Number(maxLimit),
+    //         "chargesType": chargesType,
+    //         "parkingChargesDtos": this.state.parkingChargesDtos
+    //     }
+    //     array.push(narray);
+    //     this.setState({
+    //         flatListData: array
+    //     }, () => {
+    //         Actions.pop({ data: this.state.flatListData });
+    //     });
+    // }
 
     showActionSheet = () => {
         this.ActionSheet.show()
@@ -236,8 +238,8 @@ export default class AddVehicleParkSubView extends React.Component {
                 }
             }).catch((error) => {
                 this.setState({
-                    isFetching:false
-                },()=>{
+                    isFetching: false
+                }, () => {
                     console.warn(error);
                 });
             });
@@ -320,7 +322,7 @@ export default class AddVehicleParkSubView extends React.Component {
         array2.push(dd);
         this.setState({
             tableData: array,
-            parkingChargesDtos:array2
+            parkingChargesDtos: array2
         });
     }
 
@@ -380,6 +382,7 @@ export default class AddVehicleParkSubView extends React.Component {
                         {this.textFieldComponent('Capacity', 'capacity', true)}
                         {this.textFieldComponent('Monthly rate', 'monthlyRate', true)}
                         {this.textFieldComponent('Night charges', 'nightCharges', true)}
+                        {this.textFieldComponent('Max Limit', 'maxLimit', true)}
 
                         <View>
                             <View style={{ flexDirection: 'row' }}>
@@ -414,7 +417,7 @@ export default class AddVehicleParkSubView extends React.Component {
                                     } else {
                                         this.setState({
                                             selected_charges_type: '- select charges type -',
-                            
+
                                         });
                                     }
 
@@ -466,7 +469,7 @@ export default class AddVehicleParkSubView extends React.Component {
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => {
-                                this.props.addVehiclesToFlatList(this.state.selected_vehicle_type_id, this.state.capacity, this.state.monthlyRate, this.state.nightCharges, this.state.selected_charges_type, this.state.parkingChargesDtos);
+                                this.props.addVehiclesToFlatList(this.state.selected_vehicle_type_id, this.state.capacity, this.state.monthlyRate, this.state.nightCharges,this.state.maxLimit, this.state.selected_charges_type, this.state.parkingChargesDtos);
                                 Actions.pop();
                             }} style={{
                                 padding: 10,

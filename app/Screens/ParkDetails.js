@@ -7,6 +7,11 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export default class ParkDetails extends React.Component {
+
+    componentDidMount = () => {
+        alert(JSON.stringify(this.props.data));
+    }
+
     render = () => {
         return (
             <SafeAreaView style={styles.safe}>
@@ -29,7 +34,7 @@ export default class ParkDetails extends React.Component {
                             margin: 1,
                             borderRadius: 5
                         }}>
-                            <Text style={{color:'white'}}>Entrance</Text>
+                            <Text style={{ color: 'white' }}>Entrance</Text>
                             <Text>Today 10:00 AM</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={{
@@ -39,7 +44,7 @@ export default class ParkDetails extends React.Component {
                             margin: 1,
                             borderRadius: 5
                         }}>
-                            <Text style={{color:'white'}}>Entrance</Text>
+                            <Text style={{ color: 'white' }}>Entrance</Text>
                             <Text>Today 10:00 AM</Text>
                         </TouchableOpacity>
                     </View>
@@ -67,36 +72,36 @@ export default class ParkDetails extends React.Component {
                     }}>
                         <Text>Book your park</Text>
                         <View style={{ flexDirection: 'row' }}>
-                            <TouchableOpacity onPress={()=>{alert('add favourite')}}>
-                            <FontAwesome name={'heart'} size={20} style={{ padding: 5 }} />
+                            <TouchableOpacity onPress={() => { alert('add favourite') }}>
+                                <FontAwesome name={'heart'} size={20} style={{ padding: 5 }} />
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={()=>{Actions.push('addreview')}}>
-                            <FontAwesome name={'comment'} size={20} style={{ padding: 5 }} />
+                            <TouchableOpacity onPress={() => { Actions.push('addreview') }}>
+                                <FontAwesome name={'comment'} size={20} style={{ padding: 5 }} />
                             </TouchableOpacity>
                         </View>
                     </View>
 
                     <View style={{ flexDirection: 'row' }}>
-                        <TouchableOpacity style={{ 
-                            flex: 1, 
+                        <TouchableOpacity style={{
+                            flex: 1,
                             alignItems: 'center',
-                            padding:10,
-                            borderBottomLeftRadius:15,
-                            margin:1
-                             }}>
-                            <Text style={{color:'blue'}}>Rs :80.00 / hour</Text>
+                            padding: 10,
+                            borderBottomLeftRadius: 15,
+                            margin: 1
+                        }}>
+                            <Text style={{ color: 'blue' }}>Rs :80.00 / hour</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{ 
-                            flex: 1, 
+                        <TouchableOpacity style={{
+                            flex: 1,
                             alignItems: 'center',
                             backgroundColor: '#32a852',
-                            padding:10,
-                            borderBottomRightRadius:15,
-                            margin:1
-                             }}
-                             onPress={()=>{alert('Booking now')}}
-                             >
-                            <Text style={{color:'white'}}>Book Now</Text>
+                            padding: 10,
+                            borderBottomRightRadius: 15,
+                            margin: 1
+                        }}
+                            onPress={() => { alert('Booking now') }}
+                        >
+                            <Text style={{ color: 'white' }}>Book Now</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

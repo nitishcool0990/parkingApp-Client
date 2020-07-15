@@ -42,7 +42,7 @@ export default class Login2 extends React.Component {
                                 if (authsubfunction_data.status == 1) {
                                     Actions.replace('home');
                                 } else {
-                                    Actions.replace('addvehicles');
+                                    Actions.replace('addvehicles', { 'token': data.token, 'user_id': data.user_id });
                                 }
                             } else {
                                 removeValue('token', () => {
@@ -50,7 +50,7 @@ export default class Login2 extends React.Component {
                                     if (authsubfunction_data.status == 1) {
                                         Actions.replace('home');
                                     } else {
-                                        Actions.replace('addvehicles');
+                                        Actions.replace('addvehicles', { 'token': data.token, 'user_id': data.user_id });
                                     }
                                 });
                             }

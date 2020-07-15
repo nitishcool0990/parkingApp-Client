@@ -357,13 +357,12 @@ async function deleteVehicle_new(Token, id) {
 }
 
 //Search Park Location
-async function searchParkLocation(Token, lattitude, longitude, vehicleTypeId) {
+async function searchParkLocation2(Token, lattitude, longitude, vehicleTypeId) {
 
   const data = {
     latitude: lattitude,
     longitude: longitude,
     vehicleTypeId: vehicleTypeId,
-    token: Token
   }
 
   try {
@@ -391,59 +390,33 @@ async function searchParkLocation(Token, lattitude, longitude, vehicleTypeId) {
   }
 }
 
+//2
+async function searchParkLocation(Token, lattitude, longitude, vehicleTypeId, then, error) {
 
-async function searchParkLocationForm(Token, lattitude, longitude, vehicleTypeId) {
+  var myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + Token);
+  myHeaders.append("Content-Type", "multipart/form-data");
+  myHeaders.append("Accept", "application/json");
 
+  var formdata = new FormData();
+  formdata.append("latitude",lattitude);
+  formdata.append("longitude",longitude);
+  formdata.append("vehicleTypeId",vehicleTypeId);
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: formdata,
+    redirect: 'follow'
+  };
+
+ console.warn(JSON.stringify(formdata));
   const url = BASE_ADDRESS + '/parking-locations/v1/findLocByCoordinates';
 
-  // let formData = new FormData();
-  // formData.append("latitude",6.850209);
-  // formData.append("longitude",79.907306);
-  // formData.append("vehicleTypeId",1);
-  // let fetchOptions = {
-  //   method: 'POST',
-  //   headers: {
-  //     'Accept': 'multipart/form-data',
-  //     'Content-Type': 'multipart/form-data',
-  //     'Authorization': "Bearer " + Token
-  //   },
-  //   body: formData
-  // };
-
-  //     console.log("#### searchParkLocation url:" + url);
-  //   console.log("#### searchParkLocation data:" + JSON.stringify(formData));
-
-
-  // fetch(url, fetchOptions)
-  //   .then((response) => {
-  //     console.log("#### searchParkLocation responce:" + JSON.stringify(response));
-  //   })
-  //   .then((responseText) => {
-  //     console.warn("#### searchParkLocation responseText:"+ JSON.stringify(responseText));
-  //   })
-  //   .catch((err) => {
-  //     console.warn(err);
-  //   });
-
-
-  const formData = new FormData()
-  formData.append('latitude', 28.4917759999);
-  formData.append('longitude', 79.907306);
-  formData.append('vehicleTypeId', 1);
-
-  fetch(url, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "multipart/form-data",
-      'Authorization': "Bearer " + Token
-    },
-    body: formData
-  })
-    .then((response) => {
-      alert(JSON.stringify(response.json())
-      )
-    });
+  fetch(url, requestOptions)
+    .then(response => response.text())
+    .then(then)
+    .catch(error);
 }
 
 //Show parking details
@@ -560,9 +533,6 @@ async function AddParkingLocation(Token, images,) {
   }
 }
 
-
-
-
 // - Agent APIS - //
 
 //Get All Parkings Location of Agent 
@@ -611,7 +581,7 @@ async function addparkingLocationInSystem(Token, image, parkdata, then, error) {
   };
   alert(JSON.stringify(parkdata));
   console.warn(JSON.stringify(parkdata));
-  fetch(BASE_ADDRESS + "/api/agent/v1/create", requestOptions)
+  fetch(BASE_ADDRESS + "/agent/v1/create", requestOptions)
     .then(response => response.text())
     .then(then)
     .catch(error);
@@ -896,7 +866,6 @@ async function updateParkingreviewsByReview(Token,reviewId,rating,comment,parkin
   }
 }
 
-
 async function findUserById(Token, id) {
 
   try {
@@ -975,6 +944,45 @@ async function findAllVehicles(Token, user, vehicleNo, vehicleType) {
   }
 }
 
+// - Parking Booking APIS - //
+
+//Get All Parkings Location of Agent 
+
+async function ParkingBookingInitiate(Token, image, parkdata, then, error) {
+
+  //sameple data
+  //  {
+  //   "parkLocId" : 5 ,
+  //    "amt" : 200 ,
+  //     "fromTime" : "18:00"  ,
+  //      "toTime" : "20:00",
+  //       "vehicleId" : 1  ,
+  //        "bonusCode" : "First100"
+  //       } 
+
+  var myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + Token);
+  myHeaders.append("Content-Type", "multipart/form-data");
+  myHeaders.append("Accept", "application/json");
+
+  var formdata = new FormData();
+  formdata.append("parkingLoc", JSON.stringify(parkdata));
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: formdata,
+    redirect: 'follow'
+  };
+  alert(JSON.stringify(parkdata));
+  console.warn(JSON.stringify(parkdata));
+  fetch(BASE_ADDRESS + "/booking/v1/initBooking", requestOptions)
+    .then(response => response.text())
+    .then(then)
+    .catch(error);
+}
+
+
 
 export { findUserById };
 export { authonticate };
@@ -998,8 +1006,6 @@ export { showParkingDetails };
 export { Booking };
 export { AddParkingLocation };
 
-export { searchParkLocationForm };
-
 export { getAllParkingsLocationofAgent };
 export { addparkingLocationInSystem };
 export { updateParkingLocation };
@@ -1012,4 +1018,6 @@ export { getAlltheArrivedVehicleList };
 export { CheckIn};
 export { CheckOut};
 export {updateParkingreviewsByReview};
+
+export {ParkingBookingInitiate};
 
