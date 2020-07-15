@@ -65,14 +65,15 @@ export default class Registration extends React.Component {
                     }}>
 
                         <View>
+                            <TouchableOpacity onPress={this.showActionSheet}>
                             <Text
-                                onPress={this.showActionSheet}
                                 style={{
                                     fontSize: 22,
                                     borderWidth: 1,
                                     padding: 10
                                 }}
                             >{this.state.country_code}</Text>
+                            </TouchableOpacity>
                             <ActionSheet
                                 ref={o => this.ActionSheet = o}
                                 title={'Select country code ?'}
